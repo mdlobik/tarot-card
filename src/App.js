@@ -1,12 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import './App.css'; // Make sure this points to your CSS file location
+import './App.css';
 
 const TarotCardFlip = () => {
   const tarotCards = Array.from({ length: 78 }, (_, index) =>
     `${process.env.PUBLIC_URL}/images/image-${String(index + 2).padStart(3, '0')}.jpg`
   );
 
-  // State to track each card's flipped status and image URL
   const [cards, setCards] = useState(Array(3).fill({ flipped: false, imageUrl: null }));
 
   const getUniqueCardImage = useCallback((excludeIndices) => {
