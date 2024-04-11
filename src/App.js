@@ -6,9 +6,12 @@ const TarotCardFlip = () => {
     `${process.env.PUBLIC_URL}/images/image-${String(index + 2).padStart(3, '0')}.jpg`
   );
 
+  // Initialize the cards state with flipped false and null imageUrl
   const [cards, setCards] = useState(Array(3).fill({ flipped: false, imageUrl: null }));
-  const [canFlip, setCanFlip] = useState(true); // Controls if cards can be flipped
+  // State to control if cards can be flipped
+  const [canFlip, setCanFlip] = useState(true);
 
+  // Callback to get a unique card image that hasn't been used already
   const getUniqueCardImage = useCallback((excludeIndices) => {
     let available = tarotCards.filter((_, index) => !excludeIndices.includes(index));
     const randomIndex = Math.floor(Math.random() * available.length);
@@ -16,11 +19,11 @@ const TarotCardFlip = () => {
   }, [tarotCards]);
 
   const handleCardClick = (cardIndex) => {
-    // Allow flipping only if `canFlip` is true
     if (canFlip) {
       setCards(currentCards =>
         currentCards.map((card, index) => {
           if (index === cardIndex && !card.flipped) {
+            // Calculate used indices to avoid repeating images
             const usedIndices = currentCards.map(card => tarotCards.indexOf(card.imageUrl)).filter(index => index >= 0);
             return { ...card, flipped: true, imageUrl: getUniqueCardImage(usedIndices) };
           }
@@ -31,16 +34,18 @@ const TarotCardFlip = () => {
   };
 
   const resetCards = () => {
-    // Disable flipping immediately upon reset
-    setCanFlip(false);
+    setCanFlip(false); // Disable flipping immediately upon reset
     setCards(currentCards =>
-      currentCards.map(card => ({ ...card, flipped: false, imageUrl: null }))
+      currentCards.map(card => ({ ...card, flipped: false }))
     );
 
-    // Re-enable flipping after a 600ms timeout, allowing animations to complete
+    // Delay clearing the images and re-enable flipping after the animations
     setTimeout(() => {
+      setCards(currentCards =>
+        currentCards.map(() => ({ flipped: false, imageUrl: null }))
+      );
       setCanFlip(true);
-    }, 600);
+    }, 600); // This duration should match your CSS flip animation duration
   };
 
   return (
