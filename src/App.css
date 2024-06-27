@@ -1,11 +1,26 @@
-body,
-html {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: black;
+.stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000 url(http://www.script-tutorials.com/demos/360/images/stars.png) repeat top center;
+    z-index: 0;
+}
+
+.twinkling {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent url(http://www.script-tutorials.com/demos/360/images/twinkling.png) repeat top center;
+    z-index: 1;
+    -moz-animation: move-twink-back 200s linear infinite;
+    -ms-animation: move-twink-back 200s linear infinite;
+    -o-animation: move-twink-back 200s linear infinite;
+    -webkit-animation: move-twink-back 200s linear infinite;
+    animation: move-twink-back 200s linear infinite;
 }
 
 .cards-container {
@@ -14,6 +29,17 @@ html {
     justify-content: center;
     align-items: center;
     gap: 20px;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.5s, transform 0.5s;
+    position: relative;
+    z-index: 2;
+    height: 100%; /* Make sure it takes the full height */
+}
+
+.cards-container.show-cards {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .cards {
@@ -25,16 +51,28 @@ html {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 286px;
-    height: auto; /* Allows the container to fit its contents */
-    perspective: 1000px; /* Depth effect for the 3D flip */
+    width: 477px;
+    height: auto;
+    perspective: 1000px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s, transform 0.5s;
 }
+
+.show-cards .card-container {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.show-cards .card-container:nth-child(1) { transition-delay: 0.2s; }
+.show-cards .card-container:nth-child(2) { transition-delay: 0.4s; }
+.show-cards .card-container:nth-child(3) { transition-delay: 0.6s; }
 
 .card {
     width: 100%;
-    height: 450px;
+    height: 600px;
     transition: transform 1s;
-    transform-style: preserve-3d; /* Enable 3D transformations */
+    transform-style: preserve-3d;
     position: relative;
 }
 
@@ -45,12 +83,19 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    backface-visibility: hidden; /* Hide the back side of the flipped element */
+    backface-visibility: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.card-front img,
+.card-back img {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
 }
 
 .card-front {
@@ -59,11 +104,11 @@ html {
 
 .card-back {
     background-color: transparent;
-    transform: rotateY(180deg); /* Rotate back side */
+    transform: rotateY(180deg);
 }
 
 .card-container.flipped .card {
-    transform: rotateY(180deg); /* Flip effect */
+    transform: rotateY(180deg);
 }
 
 .card-label {
@@ -72,10 +117,61 @@ html {
     font-size: 16px;
     text-align: center;
     width: 100%;
+    font-family: "Amatic SC", sans-serif;
+    font-size: 40px;
 }
 
 .button {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 60px;
     cursor: pointer;
+}
+
+.btn {
+    position: relative;
+    display: inline-block;
+}
+
+.btn a {
+    display: block;
+    height: 70px;
+    width: 220px;
+    background: linear-gradient(
+            115deg,
+            #4fcf70,
+            #fad648,
+            #a767e5,
+            #12bcfe,
+            #44ce7b
+    );
+    text-align: center;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    font-family: "Amatic SC", sans-serif;
+}
+
+.btn a span {
+    height: 88%;
+    width: 96%;
+    background: #111111;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 6px;
+    line-height: 56px;
+    color: #f5f5f5;
+    font-size: 34px;
+}
+
+.btn a:hover {
+    animation: animate 0.4s linear infinite;
+}
+
+@keyframes animate {
+    100% {
+        filter: hue-rotate(-360deg);
+    }
 }
