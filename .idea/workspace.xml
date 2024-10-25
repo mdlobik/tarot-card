@@ -5,101 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9831743e-5ea7-4d07-afa1-b6f470c364c6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/cody_history.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/git_toolbox_blame.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/tarot-card-react.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DeckAnimation.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/DeckAnimation.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Modal.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Modal.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Stars.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/TarotCardFlip.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-002.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-003.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-004.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-005.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-006.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-007.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-008.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-009.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-010.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-011.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-012.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-013.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-014.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-015.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-016.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-017.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-018.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-019.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-020.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-021.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-022.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-023.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-024.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-025.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-026.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-027.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-028.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-029.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-030.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-031.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-032.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-033.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-034.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-035.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-036.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-037.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-038.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-039.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-040.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-041.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-042.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-043.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-044.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-045.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-046.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-047.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-048.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-049.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-050.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-051.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-052.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-053.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-054.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-055.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-056.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-057.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-058.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-059.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-060.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-061.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-062.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-063.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-064.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-065.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-066.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-067.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-068.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-069.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-070.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-071.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-072.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-073.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-074.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-075.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-076.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-077.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-078.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/images/image-079.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/public/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/stars.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/images/twinkling.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/server.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Button.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/TarotCardFlip/TarotCardFlip.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/data/tarotCards.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vercel.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/tarot-card-react.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/tarot-card-react.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/favicon.ico" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.test.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DeckAnimation.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DeckAnimation/DeckAnimation.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/DeckAnimation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DeckAnimation/DeckAnimation.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Modal.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Modal/Modal.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Modal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Modal/Modal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TarotCardFlip.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/logo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/reportWebVitals.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/setupTests.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,12 +54,16 @@
   &quot;associatedIndex&quot;: 4
 }</component>
   <component name="ProjectId" id="2fpTkTTeaqi2aiMhccYlTxnT9Um" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
     &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.CodyConvertUrlToCodebaseName&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.CodyHistoryLlmMigration&quot;: &quot;true&quot;,
@@ -136,6 +71,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;aem-ide.servers.initialized&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;2-css-twinkle&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
@@ -150,6 +86,15 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Matt\Desktop\Client Freelance\Tyler Tarot Card\tarot-card-react\public" />
+      <recent name="C:\Users\Matt\Desktop\Client Freelance\Tyler Tarot Card\tarot-card-react\src\assets" />
+      <recent name="C:\Users\Matt\Desktop\Client Freelance\Tyler Tarot Card\tarot-card-react\src\components\DeckAnimation" />
+      <recent name="C:\Users\Matt\Desktop\Client Freelance\Tyler Tarot Card\tarot-card-react\src\components\Modal" />
+      <recent name="C:\Users\Matt\Desktop\Client Freelance\Tyler Tarot Card\tarot-card-react\src\components\TarotCardFlip" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -170,7 +115,12 @@
       <workItem from="1719438155834" duration="8103000" />
       <workItem from="1719463075172" duration="114000" />
       <workItem from="1719463216635" duration="5045000" />
-      <workItem from="1719521373942" duration="5413000" />
+      <workItem from="1719521373942" duration="6451000" />
+      <workItem from="1719804323820" duration="57000" />
+      <workItem from="1719804399120" duration="13000" />
+      <workItem from="1729803390958" duration="1197000" />
+      <workItem from="1729825740658" duration="3035000" />
+      <workItem from="1729831165462" duration="7746000" />
     </task>
     <servers />
   </component>
@@ -182,5 +132,19 @@
         <option value="$PROJECT_DIR$/node_modules/tailwindcss/stubs/tailwind.config.cjs" />
       </list>
     </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>

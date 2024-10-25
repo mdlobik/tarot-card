@@ -1,0 +1,244 @@
+.reset-button-container {
+    position: relative;
+    width: 280px;
+    height: 100px;
+    margin: 30px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 20px;
+    animation: containerPulse 4s ease infinite;
+}
+
+.reset-button-container::before,
+.reset-button-container::after {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background-image:
+            radial-gradient(circle at center, #ff6b6b 1px, transparent 1px),
+            radial-gradient(circle at center, #4ecdc4 2px, transparent 2px),
+            radial-gradient(circle at center, #9d67e1 1.5px, transparent 1.5px);
+    background-size: 20px 20px, 25px 25px, 30px 30px;
+    opacity: 0.6;
+    animation: starField 4s linear infinite;
+    pointer-events: none;
+}
+
+.reset-button-container::before {
+    mix-blend-mode: screen;
+    filter: blur(1px);
+}
+
+.reset-button-container::after {
+    background-image:
+            radial-gradient(circle at center, #45b7d1 2px, transparent 2px),
+            radial-gradient(circle at center, #ffbe3d 1px, transparent 1px),
+            radial-gradient(circle at center, #ff6bec 1.5px, transparent 1.5px);
+    animation: starField 6s linear infinite reverse;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    filter: blur(0.5px);
+}
+
+.reset-button {
+    position: relative;
+    width: 220px;
+    height: 70px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    font-family: "Amatic SC", sans-serif;
+    font-size: 28px;
+    z-index: 2;
+}
+
+.reset-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+            45deg,
+            #ff6b6b,
+            #4ecdc4,
+            #45b7d1,
+            #9d67e1,
+            #ff6b6b
+    );
+    background-size: 400% 400%;
+    animation: gradientBG 8s ease infinite;
+    border-radius: 15px;
+    z-index: 1;
+}
+
+.reset-button::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 12px;
+    z-index: 2;
+}
+
+.reset-button span {
+    position: relative;
+    z-index: 3;
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    font-size: 22px;
+    letter-spacing: 2px;
+}
+
+.reset-button:hover::before {
+    animation: gradientBG 3s ease infinite, glowPulse 2s ease-in-out infinite;
+}
+
+.reset-button:hover span {
+    animation: textGlow 2s ease-in-out infinite;
+}
+
+.reset-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.reset-button:disabled::before {
+    animation: none;
+    background: linear-gradient(45deg, #666, #444);
+}
+
+/* Border effect */
+.reset-button-container::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(
+            45deg,
+            #ff6b6b,
+            #ffbe3d,
+            #4ecdc4,
+            #45b7d1,
+            #9d67e1,
+            #ff6bec
+    );
+    background-size: 400% 400%;
+    animation: gradientBorder 8s linear infinite;
+    border-radius: 22px;
+    z-index: -1;
+    filter: blur(3px);
+}
+
+/* Sparkles */
+.sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.sparkle:nth-child(1) { animation: sparkleFloat 3s ease-in-out infinite; left: 10%; top: 20%; }
+.sparkle:nth-child(2) { animation: sparkleFloat 4s ease-in-out infinite 0.5s; right: 15%; top: 30%; }
+.sparkle:nth-child(3) { animation: sparkleFloat 3.5s ease-in-out infinite 1s; left: 20%; bottom: 25%; }
+.sparkle:nth-child(4) { animation: sparkleFloat 4.5s ease-in-out infinite 1.5s; right: 25%; bottom: 15%; }
+
+/* Animations */
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes glowPulse {
+    0% {
+        filter: brightness(1) blur(0px);
+    }
+    50% {
+        filter: brightness(1.2) blur(3px);
+    }
+    100% {
+        filter: brightness(1) blur(0px);
+    }
+}
+
+@keyframes textGlow {
+    0% {
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+        0 0 30px rgba(255, 107, 107, 0.6),
+        0 0 40px rgba(78, 205, 196, 0.4);
+    }
+    100% {
+        text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+}
+
+@keyframes starField {
+    0% {
+        transform: translateX(-50%) translateY(-50%) rotate(0deg) scale(1);
+    }
+    50% {
+        transform: translateX(-50%) translateY(-50%) rotate(180deg) scale(1.5);
+    }
+    100% {
+        transform: translateX(-50%) translateY(-50%) rotate(360deg) scale(1);
+    }
+}
+
+@keyframes containerPulse {
+    0%, 100% {
+        box-shadow:
+                0 0 15px rgba(255, 107, 107, 0.3),
+                0 0 30px rgba(78, 205, 196, 0.2),
+                0 0 45px rgba(157, 103, 225, 0.1);
+    }
+    50% {
+        box-shadow:
+                0 0 30px rgba(255, 107, 107, 0.5),
+                0 0 60px rgba(78, 205, 196, 0.3),
+                0 0 90px rgba(157, 103, 225, 0.2);
+    }
+}
+
+@keyframes gradientBorder {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes sparkleFloat {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate(5px, -5px) rotate(90deg);
+    }
+    50% {
+        transform: translate(0, -10px) rotate(180deg);
+    }
+    75% {
+        transform: translate(-5px, -5px) rotate(270deg);
+    }
+}

@@ -1,6 +1,6 @@
 import React from 'react';
-import TarotCardFlip from './TarotCardFlip'; // Adjust the path if necessary
-import './App.css'; // Make sure this points to your CSS file location
+import TarotCardFlip from './components/TarotCardFlip/TarotCardFlip';
+import './App.css';
 
 function App() {
     return (
