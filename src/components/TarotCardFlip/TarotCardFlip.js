@@ -2,7 +2,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import axios from 'axios';
 import Modal from '../Modal/Modal';
 import DeckAnimation from '../DeckAnimation/DeckAnimation';
-import { tarotCards } from '../../data/tarotCards';
+import tarotCards from '../../data/tarotCards'; // Import tarotCards data
 import '../DeckAnimation/DeckAnimation.css';
 import '../../App.css';
 import '../../Stars.css';
@@ -10,7 +10,7 @@ import '../../Stars.css';
 const POSITIONS = ['Past', 'Present', 'Future'];
 
 const TarotCardFlip = () => {
-    const [cards, setCards] = useState(Array(3).fill({ flipped: false, imageUrl: null, name: null }));
+    const [cards, setCards] = useState(Array(3).fill({ flipped: false, imageUrl: null, name: null, description: null }));
     const [modalVisible, setModalVisible] = useState(false);
     const [modalImage, setModalImage] = useState(null);
     const [aiReading, setAiReading] = useState('');
@@ -22,23 +22,23 @@ const TarotCardFlip = () => {
     const [showCards, setShowCards] = useState(false);
 
     const getUniqueCardImage = useCallback((excludeIndices) => {
-        let available = tarotCards.filter((_, index) => !excludeIndices.includes(index));
-        const randomIndex = Math.floor(Math.random() * available.length);
-        return available[randomIndex];
+        const availableCards = tarotCards.filter((_, index) => !excludeIndices.includes(index));
+        const randomIndex = Math.floor(Math.random() * availableCards.length);
+        return availableCards[randomIndex];
     }, []);
 
     const handleCardClick = useCallback((cardIndex) => {
-        if (isLoading) return;
+        if (isLoading || cards[cardIndex].flipped) return;
 
         setCards(currentCards => {
-            if (currentCards[cardIndex].flipped) return currentCards;
+            const usedIndices = currentCards
+                .filter(card => card.flipped)
+                .map(card => tarotCards.findIndex(c => c.src === card.imageUrl));
+            const newCard = getUniqueCardImage(usedIndices);
 
             return currentCards.map((card, index) => {
                 if (index === cardIndex) {
-                    const usedIndices = currentCards
-                        .map(card => tarotCards.findIndex(c => c.src === card.imageUrl))
-                        .filter(index => index >= 0);
-                    const newCard = getUniqueCardImage(usedIndices);
+                    console.log(`Card at position ${index} flipped. Card info:`, newCard); // Added debug
                     return {
                         ...card,
                         flipped: true,
@@ -50,30 +50,34 @@ const TarotCardFlip = () => {
                 return card;
             });
         });
-    }, [getUniqueCardImage, isLoading]);
+    }, [getUniqueCardImage, isLoading, cards]);
 
-    // Generate reading only once when all cards are flipped
     useEffect(() => {
         const generateReading = async () => {
             const allFlipped = cards.every(card => card.flipped);
+
             if (allFlipped && !hasGeneratedReading) {
                 setIsLoading(true);
                 setError(null);
 
-                try {
-                    const selectedCards = cards.map((card, index) => ({
-                        position: POSITIONS[index],
-                        name: card.name,
-                        description: card.description
-                    }));
+                const selectedCards = cards.map((card, index) => ({
+                    position: POSITIONS[index],
+                    name: card.name,
+                    description: card.description
+                }));
 
-                    const response = await axios.post('/api/gemini-tarot', {
+                console.log("Generated prompt for API:", selectedCards);  // Debug log for selected cards
+
+                try {
+                    const response = await axios.post('http://localhost:5000/api/gemini-tarot', {
                         cards: selectedCards
                     }, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     });
+
+                    console.log("API Response:", response.data);  // Debug log for API response
 
                     if (response.data.reading) {
                         setAiReading(response.data.reading);
@@ -84,7 +88,6 @@ const TarotCardFlip = () => {
                 } catch (error) {
                     console.error("Error generating tarot reading:", error);
                     setError("The mystical forces are unclear at this moment. Please try again later.");
-                    setAiReading(null);
                 } finally {
                     setIsLoading(false);
                 }
@@ -100,21 +103,8 @@ const TarotCardFlip = () => {
         setIsLoading(false);
         setHasGeneratedReading(false);
 
-        setCards(currentCards =>
-            currentCards.map(card => ({ ...card, flipped: false }))
-        );
-
-        setTimeout(() => {
-            setCards(currentCards =>
-                currentCards.map(card => ({
-                    ...card,
-                    imageUrl: null,
-                    name: null,
-                    description: null
-                }))
-            );
-        }, 600);
-    }, []);
+        setCards(cards.map(card => ({ ...card, flipped: false, imageUrl: null, name: null, description: null })));
+    }, [cards]);
 
     const handleMouseEnter = useCallback((imageUrl) => {
         hoverTimeout.current = setTimeout(() => {
@@ -156,25 +146,15 @@ const TarotCardFlip = () => {
                                 >
                                     <div className="card">
                                         <div className="card-front">
-                                            <img
-                                                src="/images/back-of-card.png"
-                                                alt="Card back"
-                                                loading="eager"
-                                            />
+                                            <img src="/images/back-of-card.png" alt="Card back" />
                                         </div>
                                         <div className="card-back">
                                             {card.imageUrl && (
-                                                <img
-                                                    src={card.imageUrl}
-                                                    alt={card.name}
-                                                    loading="lazy"
-                                                />
+                                                <img src={card.imageUrl} alt={card.name} />
                                             )}
                                         </div>
                                     </div>
-                                    <span className="card-label">
-                                        {POSITIONS[index]}
-                                    </span>
+                                    <span className="card-label">{POSITIONS[index]}</span>
                                 </div>
                             ))}
                         </div>
@@ -185,13 +165,11 @@ const TarotCardFlip = () => {
                                     <p>The spirits are contemplating your cards...</p>
                                 </div>
                             )}
-
                             {error && !isLoading && (
                                 <div className="ai-reading error">
                                     <p>{error}</p>
                                 </div>
                             )}
-
                             {aiReading && !isLoading && !error && (
                                 <div className="ai-reading">
                                     <h3>Your Mystical Reading</h3>
@@ -204,11 +182,7 @@ const TarotCardFlip = () => {
                             <button className="draw-new-cards-btn" onClick={resetCards}>Draw New Cards</button>
                         </div>
 
-                        <Modal
-                            show={modalVisible}
-                            imageUrl={modalImage}
-                            onClose={handleCloseModal}
-                        />
+                        <Modal show={modalVisible} imageUrl={modalImage} onClose={handleCloseModal} />
                     </div>
                 </div>
             </div>
