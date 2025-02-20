@@ -1,28 +1,31 @@
-.stars {
+/* Background Stars and Twinkling Effect */
+.stars, .twinkling {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.stars {
     background: #000 url('../public/images/stars.png') repeat top center;
     z-index: 0;
 }
 
 .twinkling {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     background: transparent url('../public/images/twinkling.png') repeat top center;
-    z-index: 1;
-    -moz-animation: move-twink-back 200s linear infinite;
-    -ms-animation: move-twink-back 200s linear infinite;
-    -o-animation: move-twink-back 200s linear infinite;
-    -webkit-animation: move-twink-back 200s linear infinite;
+    z-index: -100;
     animation: move-twink-back 200s linear infinite;
 }
 
+@keyframes move-twink-back {
+    from { background-position: 0 0; }
+    to { background-position: -10000px 5000px; }
+}
+
+/* Cards Container */
 .cards-container {
     display: flex;
     flex-direction: column;
@@ -34,7 +37,8 @@
     transition: opacity 0.5s, transform 0.5s;
     position: relative;
     z-index: 2;
-    height: 100%; /* Make sure it takes the full height */
+    height: 100%;
+    padding: 20px;
 }
 
 .cards-container.show-cards {
@@ -45,18 +49,22 @@
 .cards {
     display: flex;
     gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .card-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    width: 477px;
+    width: 100%;
+    max-width: 300px;
     height: auto;
     perspective: 1000px;
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.5s, transform 0.5s;
+
 }
 
 .show-cards .card-container {
@@ -70,7 +78,8 @@
 
 .card {
     width: 100%;
-    height: 600px;
+    height: 0;
+    padding-bottom: 150%; /* Maintain aspect ratio */
     transition: transform 1s;
     transform-style: preserve-3d;
     position: relative;
@@ -96,6 +105,7 @@
     width: 100%;
     height: 100%;
     border-radius: 10px;
+    object-fit: cover;
 }
 
 .card-front {
@@ -114,25 +124,110 @@
 .card-label {
     margin-top: 10px;
     color: white;
-    font-size: 16px;
+    font-size: 24px;
     text-align: center;
     width: 100%;
     font-family: "Amatic SC", sans-serif;
-    font-size: 40px;
 }
 
-.button {
-    text-align: center;
-    margin-top: 60px;
-    cursor: pointer;
+@media (min-width: 600px) {
+    .card-container {
+        max-width: 200px;
+    }
+
+    .card-label {
+        font-size: 28px;
+    }
 }
 
-.btn {
+@media (min-width: 900px) {
+    .card-container {
+        max-width: 250px;
+    }
+
+    .card-label {
+        font-size: 32px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .card-container {
+        max-width: 300px;
+    }
+
+    .card-label {
+        font-size: 36px;
+    }
+}
+
+/* Deck Animation Styles */
+.deck-animation-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    perspective: 1000px;
+    overflow: hidden;
+    transition: opacity 0.5s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.fade-out {
+    opacity: 0;
+}
+
+.deck {
     position: relative;
-    display: inline-block;
+    width: 100%;
+    height: 100%;
 }
 
-.btn a {
+.deck-card {
+    position: absolute;
+    width: 50vw;
+    max-width: 400px;
+    height: calc(50vw * 1.5);
+    max-height: 600px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    animation-duration: 1.5s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.deck-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+@keyframes shuffleLeft {
+    0% { transform: translate(-50%, -50%) translateX(-300px) translateY(0) rotate(0deg); }
+    25% { transform: translate(-50%, -50%) translateX(-150px) translateY(-100px) rotate(-10deg); }
+    50% { transform: translate(-50%, -50%) translateX(0) translateY(0) rotate(10deg); }
+    75% { transform: translate(-50%, -50%) translateX(150px) translateY(100px) rotate(-10deg); }
+    100% { transform: translate(-50%, -50%) translateX(0) translateY(0) rotate(0deg); }
+}
+
+@keyframes shuffleRight {
+    0% { transform: translate(-50%, -50%) translateX(300px) translateY(0) rotate(0deg); }
+    25% { transform: translate(-50%, -50%) translateX(150px) translateY(-100px) rotate(10deg); }
+    50% { transform: translate(-50%, -50%) translateX(0) translateY(0) rotate(-10deg); }
+    75% { transform: translate(-50%, -50%) translateX(-150px) translateY(100px) rotate(10deg); }
+    100% { transform: translate(-50%, -50%) translateX(0) translateY(0) rotate(0deg); }
+}
+
+/* Button Styles */
+.start-reading-btn,
+.draw-new-cards-btn {
     display: block;
     height: 70px;
     width: 220px;
@@ -146,12 +241,18 @@
     );
     text-align: center;
     border-radius: 10px;
-    overflow: hidden;
+    cursor: pointer;
     position: relative;
+    margin: 0 auto;
     font-family: "Amatic SC", sans-serif;
+    font-size: 30px;
+    border: none;
+    outline: none;
+    margin-bottom: 20px;
 }
 
-.btn a span {
+.start-reading-btn span,
+.draw-new-cards-btn span {
     height: 88%;
     width: 96%;
     background: #111111;
@@ -161,12 +262,13 @@
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 6px;
-    line-height: 56px;
+    line-height: 55px;
     color: #f5f5f5;
-    font-size: 34px;
+    font-size: 35px;
 }
 
-.btn a:hover {
+.start-reading-btn:hover,
+.draw-new-cards-btn:hover {
     animation: animate 0.4s linear infinite;
 }
 
@@ -176,134 +278,30 @@
     }
 }
 
-/* Add these to your existing CSS */
-.reading-section {
-    width: 100%;
-    max-width: 800px;
-    margin-top: 40px;
-    padding: 0 20px;
-}
-
-.ai-reading {
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 15px;
-    padding: 2rem;
-    color: #fff;
-    text-align: center;
-    margin-top: 20px;
-}
-
-.ai-reading h3 {
-    font-family: "Amatic SC", sans-serif;
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: #fad648;
-}
-
-.ai-reading p {
-    font-size: 1.5rem;
-    line-height: 1.6;
-    margin: 0;
-}
-
-.ai-reading.loading {
-    color: #fad648;
-}
-
-.ai-reading.loading p {
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 0.6; }
-    50% { opacity: 1; }
-    100% { opacity: 0.6; }
-}
-
-/* Ensure button maintains its position */
-.button.btn {
-    margin: 60px auto 0;
-    position: relative;
-    z-index: 2;
-}
-
-.reading-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 40px auto 0;
-    min-height: 200px; /* Adjust based on your content */
-    position: relative;
-}
-
-.ai-reading {
-    background: rgba(0, 0, 0, 0.7);
-    border-radius: 15px;
-    padding: 2rem;
-    color: #fff;
-    text-align: center;
-    transition: opacity 0.3s ease;
-    position: relative;
-}
-
-.ai-reading.loading {
-    color: #fad648;
-}
-
-.ai-reading.loading p {
-    animation: pulse 2s infinite;
-}
-
-.ai-reading h3 {
-    font-family: "Amatic SC", sans-serif;
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: #fad648;
-}
-
-.ai-reading p {
-    font-size: 1.5rem;
-    line-height: 1.6;
-    margin: 0;
-}
-
-@keyframes pulse {
-    0% { opacity: 0.6; }
-    50% { opacity: 1; }
-    100% { opacity: 0.6; }
-}
-
-/* Button styles to prevent interaction during loading */
-.button.btn {
-    pointer-events: var(--button-interaction, all);
-    opacity: var(--button-opacity, 1);
-    transition: opacity 0.3s ease;
-}
-
-.button.btn[disabled],
-.button.btn.disabled {
-    --button-interaction: none;
-    --button-opacity: 0.5;
-    cursor: not-allowed;
-}
-
+/* Button Container */
 .button-container {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+    position: relative;
+    z-index: 2;
 }
 
-.draw-new-cards-btn {
-    padding: 10px 20px;
-    font-size: 18px;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+/* Adjustments for Smaller Screens */
+@media (max-width: 600px) {
+    .start-reading-btn,
+    .draw-new-cards-btn {
+        width: 80%;
+        height: 60px;
+    }
 
-.draw-new-cards-btn:hover {
-    background-color: #357ab7;
-}
+    .start-reading-btn span,
+    .draw-new-cards-btn span {
+        line-height: 50px;
+        font-size: 28px;
+    }
 
+    .card-label {
+        font-size: 20px;
+    }
+}

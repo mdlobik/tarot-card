@@ -2,12 +2,13 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import axios from 'axios';
 import Modal from '../Modal/Modal';
 import DeckAnimation from '../DeckAnimation/DeckAnimation';
-import tarotCards from '../../data/tarotCards'; // Import tarotCards data
+import tarotCards from '../../data/tarotCards';
 import '../DeckAnimation/DeckAnimation.css';
 import '../../App.css';
 import '../../Stars.css';
 
 const POSITIONS = ['Past', 'Present', 'Future'];
+const API_BASE_URL = 'http://localhost:5001';
 
 const TarotCardFlip = () => {
     const [cards, setCards] = useState(Array(3).fill({ flipped: false, imageUrl: null, name: null, description: null }));
@@ -20,6 +21,7 @@ const TarotCardFlip = () => {
     const hoverTimeout = useRef(null);
     const [showDeckAnimation, setShowDeckAnimation] = useState(true);
     const [showCards, setShowCards] = useState(false);
+    const isSelectingCard = useRef(false);
 
     const getUniqueCardImage = useCallback((excludeIndices) => {
         const availableCards = tarotCards.filter((_, index) => !excludeIndices.includes(index));
@@ -28,7 +30,9 @@ const TarotCardFlip = () => {
     }, []);
 
     const handleCardClick = useCallback((cardIndex) => {
-        if (isLoading || cards[cardIndex].flipped) return;
+        if (isLoading || cards[cardIndex].flipped || isSelectingCard.current) return;
+
+        isSelectingCard.current = true;
 
         setCards(currentCards => {
             const usedIndices = currentCards
@@ -38,7 +42,7 @@ const TarotCardFlip = () => {
 
             return currentCards.map((card, index) => {
                 if (index === cardIndex) {
-                    console.log(`Card at position ${index} flipped. Card info:`, newCard); // Added debug
+                    console.log(`Card at position ${index} flipped. Card info:`, newCard);
                     return {
                         ...card,
                         flipped: true,
@@ -50,6 +54,10 @@ const TarotCardFlip = () => {
                 return card;
             });
         });
+
+        setTimeout(() => {
+            isSelectingCard.current = false;
+        }, 500);
     }, [getUniqueCardImage, isLoading, cards]);
 
     useEffect(() => {
@@ -66,28 +74,48 @@ const TarotCardFlip = () => {
                     description: card.description
                 }));
 
-                console.log("Generated prompt for API:", selectedCards);  // Debug log for selected cards
+                console.log("Generated prompt for API:", selectedCards);
 
                 try {
-                    const response = await axios.post('http://localhost:5000/api/gemini-tarot', {
+                    // First check if server is accessible
+                    try {
+                        await axios.get(`${API_BASE_URL}/api/test`);
+                    } catch (err) {
+                        console.error("Server health check failed:", err);
+                        throw new Error('Server is not accessible');
+                    }
+
+                    // Make the actual reading request
+                    const response = await axios.post(`${API_BASE_URL}/api/gemini-tarot`, {
                         cards: selectedCards
                     }, {
                         headers: {
                             'Content-Type': 'application/json'
-                        }
+                        },
+                        timeout: 10000
                     });
 
-                    console.log("API Response:", response.data);  // Debug log for API response
+                    console.log("API Response:", response.data);
 
-                    if (response.data.reading) {
+                    if (response.data?.reading) {
                         setAiReading(response.data.reading);
                         setHasGeneratedReading(true);
                     } else {
-                        throw new Error('No reading received from API');
+                        throw new Error('Invalid response format');
                     }
                 } catch (error) {
                     console.error("Error generating tarot reading:", error);
-                    setError("The mystical forces are unclear at this moment. Please try again later.");
+                    let errorMessage = "The mystical forces are unclear at this moment. Please try again later.";
+
+                    if (error.message === 'Server is not accessible') {
+                        errorMessage = "Unable to connect to the mystical realm. Please ensure the server is running.";
+                    } else if (error.response?.status === 404) {
+                        errorMessage = "The path to the mystical realm cannot be found. Please check the server configuration.";
+                    } else if (error.code === 'ECONNABORTED') {
+                        errorMessage = "The connection timed out. Please try again.";
+                    }
+
+                    setError(errorMessage);
                 } finally {
                     setIsLoading(false);
                 }
@@ -102,7 +130,6 @@ const TarotCardFlip = () => {
         setError(null);
         setIsLoading(false);
         setHasGeneratedReading(false);
-
         setCards(cards.map(card => ({ ...card, flipped: false, imageUrl: null, name: null, description: null })));
     }, [cards]);
 
@@ -179,7 +206,9 @@ const TarotCardFlip = () => {
                         </div>
 
                         <div className="button-container">
-                            <button className="draw-new-cards-btn" onClick={resetCards}>Draw New Cards</button>
+                            <button className="draw-new-cards-btn" onClick={resetCards}>
+                                Draw New Cards
+                            </button>
                         </div>
 
                         <Modal show={modalVisible} imageUrl={modalImage} onClose={handleCloseModal} />
