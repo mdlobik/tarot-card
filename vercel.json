@@ -16,7 +16,7 @@
   ],
   "routes": [
     {
-      "src": "/api/gemini-tarot",
+      "src": "/api/tarot",
       "methods": ["POST"],
       "dest": "/api/server.js"
     },
@@ -47,7 +47,7 @@
     }
   ],
   "env": {
-    "GOOGLE_API_KEY": "AIzaSyDut7NTGEcNSiycqXJeoCIrBXMAylsiMxg",
+    "COHERE_API_KEY": "JO9gbzUl2UGeWoWoQkgRuhSfuswqUYVlhTcFGmqz",
     "NODE_ENV": "production",
     "PORT": "443"
   },
