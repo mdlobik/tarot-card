@@ -27,17 +27,26 @@ app.post('/api/gemini-tarot', async (req, res) => {
         });
         prompt += '\nInterpret the cards in a mystical and insightful manner.';
 
-        // Initialize the Gemini client with your API key (set in Vercel as an environment variable)
+        // Initialize the Gemini client with your API key
         const client = new Gemini({ apiKey: process.env.GOOGLE_API_KEY });
 
-        // Call the Gemini API (adjust parameters as needed)
+        // IMPORTANT: specify a model in generateText()
         const result = await client.generateText({
-            prompt: prompt,
+            model: 'models/text-bison-001',
+            prompt,
             temperature: 0.7,
             maxOutputTokens: 256,
         });
 
-        res.json({ reading: result.text });
+        // Log the entire result to see the structure
+        console.log('Gemini API raw response:', result);
+
+        // Some versions store text in result.candidates[0].output
+        // Adjust if needed. For example:
+        // const readingText = result.candidates?.[0]?.output || 'No reading found.';
+        const readingText = result.text || 'No reading found.';
+
+        res.json({ reading: readingText });
     } catch (error) {
         console.error('Error generating tarot reading:', error);
         res.status(500).json({ error: 'An error occurred while generating the tarot reading.' });
