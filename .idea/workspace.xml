@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="9831743e-5ea7-4d07-afa1-b6f470c364c6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/api/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/TarotCardFlip/TarotCardFlip.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/TarotCardFlip/TarotCardFlip.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,6 +134,8 @@
       <workItem from="1737514827267" duration="2000" />
       <workItem from="1737575793022" duration="6000" />
       <workItem from="1740051921338" duration="507000" />
+      <workItem from="1740078748766" duration="26000" />
+      <workItem from="1740407733896" duration="203000" />
     </task>
     <servers />
   </component>

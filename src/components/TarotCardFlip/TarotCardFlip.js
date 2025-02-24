@@ -8,7 +8,6 @@ import '../../App.css';
 import '../../Stars.css';
 
 const POSITIONS = ['Past', 'Present', 'Future'];
-const API_BASE_URL = 'http://localhost:5001';
 
 const TarotCardFlip = () => {
     const [cards, setCards] = useState(Array(3).fill({ flipped: false, imageUrl: null, name: null, description: null }));
@@ -77,21 +76,14 @@ const TarotCardFlip = () => {
                 console.log("Generated prompt for API:", selectedCards);
 
                 try {
-                    // First check if server is accessible
-                    try {
-                        await axios.get(`${API_BASE_URL}/api/test`);
-                    } catch (err) {
-                        console.error("Server health check failed:", err);
-                        throw new Error('Server is not accessible');
-                    }
+                    // Health-check the API
+                    await axios.get(`/api/test`);
 
-                    // Make the actual reading request
-                    const response = await axios.post(`${API_BASE_URL}/api/gemini-tarot`, {
+                    // Make the reading request using a relative URL
+                    const response = await axios.post(`/api/gemini-tarot`, {
                         cards: selectedCards
                     }, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         timeout: 10000
                     });
 
