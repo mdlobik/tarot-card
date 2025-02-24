@@ -10,11 +10,16 @@
       "use": "@vercel/static-build",
       "config": {
         "distDir": "build",
-        "buildCommand": "npm run build"
+        "buildCommand": "npm run vercel-build"
       }
     }
   ],
   "routes": [
+    {
+      "src": "/api/test",
+      "methods": ["GET"],
+      "dest": "/api/server.js"
+    },
     {
       "src": "/api/tarot",
       "methods": ["POST"],
