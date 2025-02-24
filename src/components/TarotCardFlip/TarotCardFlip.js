@@ -102,10 +102,11 @@ const TarotCardFlip = () => {
                     } else {
                         // Fallback in case the response doesn't have a reading
                         const fallbackReading =
-                            "The cards reveal a journey through time. Your past has shaped who you are, " +
-                            "your present shows where you stand, and your future holds potential waiting to unfold. " +
-                            "These three cards together tell a story of transformation and growth. " +
-                            "Trust in your intuition as you navigate the path ahead.";
+                            `The ${selectedCards[0].name} in your past position reveals how your past has shaped who you are. ` +
+                            `The ${selectedCards[1].name} in your present position illuminates where you stand now. ` +
+                            `The ${selectedCards[2].name} in your future position suggests the potential waiting to unfold. ` +
+                            `These three cards together tell a story of transformation and growth unique to your situation. ` +
+                            `Trust in your intuition as you navigate the path ahead.`;
 
                         setAiReading(fallbackReading);
                         setHasGeneratedReading(true);
@@ -115,10 +116,10 @@ const TarotCardFlip = () => {
 
                     // Provide a fallback reading even if the API call fails
                     const fallbackReading =
-                        "The mystical connection reveals that your past experiences have prepared you for this moment. " +
-                        "Your present situation contains both challenges and opportunities that are shaping your journey. " +
-                        "The future card suggests that your path forward holds promise if you remain true to yourself. " +
-                        "Together, these cards form a narrative of growth and self-discovery.";
+                        `The ${selectedCards[0].name} in your past position reveals that your past experiences have prepared you for this moment. ` +
+                        `The ${selectedCards[1].name} in your present position shows that your current situation contains both challenges and opportunities shaping your journey. ` +
+                        `The ${selectedCards[2].name} in your future position suggests that your path forward holds promise if you remain true to yourself. ` +
+                        `Together, these three specific cards form a narrative of growth and self-discovery unique to your reading.`;
 
                     setAiReading(fallbackReading);
                     setHasGeneratedReading(true);

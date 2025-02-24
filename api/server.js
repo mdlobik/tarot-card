@@ -100,15 +100,15 @@ function generateTarotReading(pastCard, presentCard, futureCard) {
         readings.future[futureCard.name] :
         "The future holds potential waiting to be realized. Your choices now will influence the path ahead.";
 
-    // Combine into a cohesive reading
+    // Combine into a cohesive reading that references the specific cards
     return `
-${pastReading} This influence from your past continues to resonate in your current circumstances.
+The ${pastCard.name} in your past position indicates: ${pastReading} This influence from your past continues to resonate in your current circumstances.
 
-${presentReading} The energies surrounding you now are dynamic and responsive to your awareness and choices.
+The ${presentCard.name} in your present position shows: ${presentReading} The energies of this card are dynamic and responsive to your awareness and choices right now.
 
-${futureReading} As you move forward, carry the wisdom gained from past experiences while remaining open to the possibilities that await.
+The ${futureCard.name} in your future position suggests: ${futureReading} As you move forward, this card's energy will be particularly significant in shaping your path.
 
-These three cards together reveal a journey of evolution and growth. The connection between your past, present, and future shows a meaningful progression that invites deeper understanding of your path. Trust the wisdom of the cards as you navigate the days ahead.
+These three cards - ${pastCard.name}, ${presentCard.name}, and ${futureCard.name} - together reveal a journey of evolution and growth. The connection between your past, present, and future shows a meaningful progression that invites deeper understanding. The way these specific cards interact creates a unique narrative for your situation. Trust the wisdom of this spread as you navigate the days ahead.
   `.trim();
 }
 
