@@ -1,50 +1,84 @@
 const express = require('express');
 const cors = require('cors');
-const cohere = require('cohere-ai');
-require('dotenv').config();
+const { CohereClient } = require('cohere-ai');
 
-// Initialize Cohere with your API key (make sure COHERE_API_KEY is set in your environment)
-cohere.init(process.env.COHERE_API_KEY);
-
+// Initialize express app
 const app = express();
-app.use(express.json());
-app.use(cors());
+const port = process.env.PORT || 3001;
 
-// Health-check endpoint
-app.get('/api/test', (req, res) => {
-    res.json({ message: 'API is working' });
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Initialize Cohere client
+const cohere = new CohereClient({
+    token: process.env.COHERE_API_KEY
 });
 
-// Endpoint to generate tarot reading using Cohere
+// Testing endpoint
+app.get('/api/test', (req, res) => {
+    res.status(200).json({ message: 'Server is accessible' });
+});
+
+// Main tarot reading endpoint
 app.post('/api/tarot', async (req, res) => {
     try {
         const { cards } = req.body;
-        if (!cards || !Array.isArray(cards)) {
-            return res.status(400).json({ error: 'Invalid card data' });
+
+        if (!cards || !Array.isArray(cards) || cards.length !== 3) {
+            return res.status(400).json({
+                error: 'Invalid request. Please provide exactly 3 cards with position, name, and description.'
+            });
         }
 
-        // Build a prompt based on the selected tarot cards
-        let prompt = 'Provide a detailed tarot reading based on the following cards:\n';
-        cards.forEach(card => {
-            prompt += `${card.position}: ${card.name} - ${card.description}\n`;
-        });
-        prompt += '\nInterpret the cards in a mystical and insightful manner.';
+        // Format the cards for the prompt
+        const formattedCards = cards.map(card =>
+            `${card.position}: ${card.name} - ${card.description}`
+        ).join('\n\n');
 
-        // Generate the reading using Cohere
+        // Build the prompt for Cohere
+        const prompt = `
+As a mystic tarot reader, provide an insightful and meaningful reading based on the following three-card spread:
+
+${formattedCards}
+
+Provide a personalized reading that interprets how these cards interact with each other and what they reveal about the querent's past, present, and future. Make the reading feel mystical, thoughtful, and personal. The reading should be 3-4 paragraphs long.
+`;
+
+        // Generate reading with Cohere
         const response = await cohere.generate({
-            model: 'command-xlarge-nightly', // Adjust this if needed; this model is available on the free tier
             prompt: prompt,
-            max_tokens: 300,
-            temperature: 0.7,
+            maxTokens: 500,
+            temperature: 0.8,
+            k: 0,
+            stopSequences: [],
+            returnLikelihoods: 'NONE'
         });
 
-        // Cohere returns the text in response.body.generations[0].text
-        const reading = response.body.generations[0].text.trim();
-        res.json({ reading });
+        // Send the generated reading
+        res.status(200).json({
+            reading: response.generations[0].text.trim()
+        });
+
     } catch (error) {
         console.error('Error generating tarot reading:', error);
-        res.status(500).json({ error: 'An error occurred while generating the tarot reading.' });
+        res.status(500).json({
+            error: 'Failed to generate reading. The mystical forces are unclear at this moment.'
+        });
     }
 });
 
+// Catch-all for unrecognized routes
+app.use('*', (req, res) => {
+    res.status(404).json({ error: 'Endpoint not found' });
+});
+
+// Start the server
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+    });
+}
+
+// Export for testing
 module.exports = app;
