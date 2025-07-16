@@ -491,6 +491,47 @@
     }
 }
 
+/* Next Button Styles */
+.next-button {
+    display: block;
+    margin: 15px auto 0;
+    padding: 10px 20px;
+    background: linear-gradient(
+        115deg,
+        #4fcf70,
+        #fad648,
+        #a767e5,
+        #12bcfe,
+        #44ce7b
+    );
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-family: "Amatic SC", sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.next-button:hover {
+    transform: scale(1.05);
+    animation: animate 0.4s linear infinite;
+}
+
+/* Transition styles */
+.cards.transitioning {
+    opacity: 0.5;
+    transition: opacity 0.5s ease;
+}
+
+.reading-container.transitioning {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
 /* Mobile View */
 @media (max-width: 600px) {
     .start-reading-btn,
@@ -511,7 +552,7 @@
 
     .card-container {
         margin-bottom: 30px;
-        max-width: 200px;
+        max-width: 80%; /* Make cards take up 80% of screen width on mobile */
     }
 
     .reading-container {
@@ -529,6 +570,17 @@
     .purchase-link a {
         font-size: 20px;
         padding: 8px 16px;
+    }
+
+    .next-button {
+        font-size: 22px;
+        padding: 8px 16px;
+        margin-top: 20px;
+    }
+
+    /* Disable hover effects on mobile */
+    .card-image-tooltip {
+        display: none;
     }
 }
 

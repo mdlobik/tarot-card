@@ -46,6 +46,8 @@ const TarotCardFlip = () => {
     const [nextCardIndex, setNextCardIndex] = useState(0);
     const [currentView, setCurrentView] = useState('Past');
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+    const [showNextButton, setShowNextButton] = useState(false);
+    const [isTransitioning, setIsTransitioning] = useState(false);
 
     // Add resize listener to detect desktop vs mobile/tablet
     useEffect(() => {
@@ -111,7 +113,7 @@ const TarotCardFlip = () => {
     const handleCardClick = useCallback(
         (cardIndex) => {
             // On desktop, allow clicking any card; on mobile/tablet, enforce sequence
-            if (isLoading || cards[cardIndex].flipped || isSelectingCard.current) return;
+            if (isLoading || cards[cardIndex].flipped || isSelectingCard.current || isTransitioning) return;
             if (!isDesktop && cardIndex !== nextCardIndex) return;
 
             isSelectingCard.current = true;
@@ -137,42 +139,65 @@ const TarotCardFlip = () => {
                 });
             });
 
-            // On mobile/tablet, update the view to the next card
-            if (!isDesktop) {
-                // Increment the next card index
-                const nextIndex = nextCardIndex + 1;
-                setNextCardIndex(nextIndex);
-
-                // If we've drawn all three cards, move to the reading view
-                if (nextIndex >= 3) {
-                    setTimeout(() => {
-                        setCurrentView('Reading');
-                    }, 1500); // Give time for the card flip animation to complete
-                } else {
-                    // Otherwise, move to the next card view
-                    setTimeout(() => {
-                        setCurrentView(VIEWS[nextIndex]);
-                    }, 1500); // Give time for the card flip animation to complete
-                }
-            } else {
-                // On desktop, check if all cards are flipped and show reading
+            // On desktop, check if all cards are flipped and show reading with a delay
+            if (isDesktop) {
                 setTimeout(() => {
                     const allFlipped = cards.every((card, idx) => 
                         idx === cardIndex ? true : card.flipped
                     );
 
                     if (allFlipped) {
-                        setCurrentView('Reading');
+                        setIsTransitioning(true);
+                        // Add a longer delay to ensure smooth transition
+                        setTimeout(() => {
+                            setCurrentView('Reading');
+                            setTimeout(() => {
+                                setIsTransitioning(false);
+                            }, 500);
+                        }, 1000);
                     }
-                }, 1500);
+                }, 1000);
+            } else {
+                // On mobile/tablet, show the Next button after card flip
+                setTimeout(() => {
+                    setShowNextButton(true);
+                }, 1000);
             }
 
             setTimeout(() => {
                 isSelectingCard.current = false;
             }, 1000);
         },
-        [getUniqueCardImage, isLoading, cards, nextCardIndex, isDesktop]
+        [getUniqueCardImage, isLoading, cards, nextCardIndex, isDesktop, isTransitioning]
     );
+
+    // Handle Next button click on mobile
+    const handleNextClick = useCallback(() => {
+        if (isTransitioning) return;
+
+        setIsTransitioning(true);
+        setShowNextButton(false);
+
+        // Increment the next card index
+        const nextIndex = nextCardIndex + 1;
+        setNextCardIndex(nextIndex);
+
+        // Add a delay for smooth transition
+        setTimeout(() => {
+            // If we've drawn all three cards, move to the reading view
+            if (nextIndex >= 3) {
+                setCurrentView('Reading');
+            } else {
+                // Otherwise, move to the next card view
+                setCurrentView(VIEWS[nextIndex]);
+            }
+
+            // Reset transition state after animation completes
+            setTimeout(() => {
+                setIsTransitioning(false);
+            }, 500);
+        }, 500);
+    }, [nextCardIndex]);
 
     useEffect(() => {
         const generateReading = async () => {
@@ -265,6 +290,8 @@ const TarotCardFlip = () => {
         setHasGeneratedReading(false);
         setNextCardIndex(0); // Reset the next card index to start with Past
         setCurrentView('Past'); // Reset the view to Past
+        setShowNextButton(false); // Hide the next button
+        setIsTransitioning(false); // Reset transition state
         setCards(
             cards.map((card) => ({ ...card, flipped: false, imageUrl: null, name: null, description: null }))
         );
@@ -304,7 +331,7 @@ const TarotCardFlip = () => {
                     <div className={`cards-container ${showCards ? 'show-cards' : ''}`} data-view={currentView}>
                         {/* Show cards section unless we're in the Reading view on mobile/tablet */}
                         {(isDesktop || currentView !== 'Reading') && (
-                            <div className={`cards ${isDesktop ? 'desktop-view' : 'mobile-view'}`}>
+                            <div className={`cards ${isDesktop ? 'desktop-view' : 'mobile-view'} ${isTransitioning ? 'transitioning' : ''}`}>
                                 {cards.map((card, index) => {
                                     // On desktop, show all cards; on mobile/tablet, only show the current view card
                                     if (!isDesktop && POSITIONS[index] !== currentView) return null;
@@ -314,7 +341,7 @@ const TarotCardFlip = () => {
                                             key={index}
                                             className={`card-container ${card.flipped ? 'flipped' : ''}`}
                                             onClick={() => handleCardClick(index)}
-                                            onMouseEnter={() => card.flipped && handleMouseEnter(card.imageUrl)}
+                                            onMouseEnter={() => isDesktop && card.flipped && handleMouseEnter(card.imageUrl)}
                                             onMouseLeave={handleMouseLeave}
                                         >
                                             <div className="card">
@@ -326,6 +353,19 @@ const TarotCardFlip = () => {
                                                 </div>
                                             </div>
                                             <span className="card-label">{POSITIONS[index]}</span>
+
+                                            {/* Show Next button on mobile after card is flipped */}
+                                            {!isDesktop && card.flipped && showNextButton && (
+                                                <button 
+                                                    className="next-button" 
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleNextClick();
+                                                    }}
+                                                >
+                                                    {nextCardIndex >= 2 ? "See Reading" : "Next Card"}
+                                                </button>
+                                            )}
                                         </div>
                                     );
                                 })}
@@ -334,7 +374,7 @@ const TarotCardFlip = () => {
 
                         {/* Only show the reading container if we're in the Reading view or loading */}
                         {(currentView === 'Reading' || isLoading) && (
-                            <div className="reading-container">
+                            <div className={`reading-container ${isTransitioning ? 'transitioning' : ''}`}>
                                 {isLoading && (
                                     <div className="ai-reading loading">
                                         <p>The spirits are contemplating your cards...</p>
