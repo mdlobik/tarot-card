@@ -23,6 +23,7 @@ const TarotCardFlip = () => {
     const [showDeckAnimation, setShowDeckAnimation] = useState(true);
     const [showCards, setShowCards] = useState(false);
     const isSelectingCard = useRef(false);
+    const [nextCardIndex, setNextCardIndex] = useState(0);
 
     const getUniqueCardImage = useCallback((excludeIndices) => {
         const availableCards = tarotCards.filter((_, index) => !excludeIndices.includes(index));
@@ -32,7 +33,8 @@ const TarotCardFlip = () => {
 
     const handleCardClick = useCallback(
         (cardIndex) => {
-            if (isLoading || cards[cardIndex].flipped || isSelectingCard.current) return;
+            // Only allow clicking on the next card in sequence (past, present, future)
+            if (isLoading || cards[cardIndex].flipped || isSelectingCard.current || cardIndex !== nextCardIndex) return;
 
             isSelectingCard.current = true;
 
@@ -44,7 +46,7 @@ const TarotCardFlip = () => {
 
                 return currentCards.map((card, index) => {
                     if (index === cardIndex) {
-                        console.log(`Card at position ${index} flipped. Card info:`, newCard);
+                        console.log(`Card at position ${index} (${POSITIONS[index]}) flipped. Card info:`, newCard);
                         return {
                             ...card,
                             flipped: true,
@@ -57,11 +59,14 @@ const TarotCardFlip = () => {
                 });
             });
 
+            // Increment the next card index
+            setNextCardIndex(prevIndex => prevIndex + 1);
+
             setTimeout(() => {
                 isSelectingCard.current = false;
             }, 500);
         },
-        [getUniqueCardImage, isLoading, cards]
+        [getUniqueCardImage, isLoading, cards, nextCardIndex]
     );
 
     useEffect(() => {
@@ -153,6 +158,7 @@ const TarotCardFlip = () => {
         setError(null);
         setIsLoading(false);
         setHasGeneratedReading(false);
+        setNextCardIndex(0); // Reset the next card index to start with Past
         setCards(
             cards.map((card) => ({ ...card, flipped: false, imageUrl: null, name: null, description: null }))
         );
@@ -224,6 +230,11 @@ const TarotCardFlip = () => {
                                 <div className="ai-reading">
                                     <h3>Your Mystical Reading</h3>
                                     <p>{aiReading}</p>
+                                    <div className="purchase-link">
+                                        <a href="https://www.amazon.com/Family-Tarot-Deck-Collaborative-Different/dp/B085BK9Z77/ref=sr_1_3?crid=AS2OT7OFW0B8&dib=eyJ2IjoiMSJ9.ueyEnZ7Am2y_KJ89XSP3kSJByiQlXR2ofi60RdshhISSxRIAxmc4XCK68Ccg8zuDBnrZYbzoT-5tZycQB89IM38szJmkmHYa6YEZ459AQwdDITHcZDGV-l7MYHnbYyyzzxVgzTPDPfB5UeHL6SG6TNXCfARvBP6uhqvFWzGHA8vrR70N390-3lPOnQmjxKDQvLuA85D_zguOPB0Fk71Z2moMf1tm1Vdsk82Oz8EfmVo.wgITTMg9FkWOD9IKTtdR3sss1CGlONlFWxDZSp5Pilg&dib_tag=se&keywords=tarot+deck+people+for+peace&qid=1752701157&sprefix=tarot+deck+people+for+peac%2Caps%2C133&sr=8-3" target="_blank" rel="noopener noreferrer">
+                                            Purchase This Tarot Deck
+                                        </a>
+                                    </div>
                                 </div>
                             )}
                         </div>

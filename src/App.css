@@ -55,7 +55,7 @@
 
 .card-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     width: 100%;
     max-width: 300px;
@@ -64,7 +64,7 @@
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.5s, transform 0.5s;
-
+    margin: 0 10px 20px;
 }
 
 .show-cards .card-container {
@@ -128,6 +128,8 @@
     text-align: center;
     width: 100%;
     font-family: "Amatic SC", sans-serif;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
 }
 
 @media (min-width: 600px) {
@@ -278,6 +280,64 @@
     }
 }
 
+/* Reading Container */
+.reading-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+}
+
+.ai-reading {
+    margin: 15px 0;
+}
+
+.ai-reading h3 {
+    font-family: "Amatic SC", sans-serif;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.ai-reading p {
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+.purchase-link {
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.purchase-link a {
+    display: inline-block;
+    padding: 10px 20px;
+    background: linear-gradient(
+        115deg,
+        #4fcf70,
+        #fad648,
+        #a767e5,
+        #12bcfe,
+        #44ce7b
+    );
+    border-radius: 10px;
+    color: white;
+    text-decoration: none;
+    font-family: "Amatic SC", sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.purchase-link a:hover {
+    transform: scale(1.05);
+    animation: animate 0.4s linear infinite;
+}
+
 /* Button Container */
 .button-container {
     display: flex;
@@ -303,5 +363,31 @@
 
     .card-label {
         font-size: 20px;
+    }
+
+    .cards {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card-container {
+        margin-bottom: 30px;
+    }
+
+    .reading-container {
+        padding: 10px;
+    }
+
+    .ai-reading h3 {
+        font-size: 28px;
+    }
+
+    .ai-reading p {
+        font-size: 16px;
+    }
+
+    .purchase-link a {
+        font-size: 20px;
+        padding: 8px 16px;
     }
 }
