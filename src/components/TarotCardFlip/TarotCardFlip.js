@@ -197,7 +197,7 @@ const TarotCardFlip = () => {
                 setIsTransitioning(false);
             }, 500);
         }, 500);
-    }, [nextCardIndex]);
+    }, [nextCardIndex, isTransitioning]);
 
     useEffect(() => {
         const generateReading = async () => {
