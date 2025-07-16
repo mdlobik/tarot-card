@@ -142,13 +142,15 @@
 
 .stars {
     background:#000 url(http://www.script-tutorials.com/demos/360/images/stars.png) repeat top center;
-    z-index:-2; /* Changed from 0 to -2 to ensure it's below other elements */
+    background-size: 50%; /* Make stars smaller */
+    z-index:-25; /* Ensure it's below all other elements */
     pointer-events: none; /* Added to ensure it doesn't block clicks */
 }
 
 .twinkling {
     background:transparent url(http://www.script-tutorials.com/demos/360/images/twinkling.png) repeat top center;
-    z-index:-1; /* Changed from 0 to -1 to ensure it's below other elements */
+    background-size: 50%; /* Make twinkling smaller */
+    z-index:-24; /* Ensure it's below all other elements but above stars */
     -moz-animation:move-twink-back 60s linear infinite;
     -ms-animation:move-twink-back 60s linear infinite;
     -o-animation:move-twink-back 60s linear infinite;
