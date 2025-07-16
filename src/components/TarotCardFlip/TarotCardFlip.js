@@ -10,6 +10,24 @@ import '../../Stars.css';
 const POSITIONS = ['Past', 'Present', 'Future'];
 const VIEWS = ['Past', 'Present', 'Future', 'Reading'];
 
+// Helper function to highlight card names in the reading
+const highlightCardNames = (text, cards) => {
+    let highlightedText = text;
+
+    // Get the names of the flipped cards
+    const cardNames = cards
+        .filter(card => card.flipped && card.name)
+        .map(card => card.name);
+
+    // Replace each card name with a highlighted version
+    cardNames.forEach(name => {
+        const regex = new RegExp(`\\b${name}\\b`, 'g');
+        highlightedText = highlightedText.replace(regex, `<span class="card-highlight">${name}</span>`);
+    });
+
+    return highlightedText;
+};
+
 const TarotCardFlip = () => {
     const [cards, setCards] = useState(
         Array(3).fill({ flipped: false, imageUrl: null, name: null, description: null })
@@ -26,6 +44,17 @@ const TarotCardFlip = () => {
     const isSelectingCard = useRef(false);
     const [nextCardIndex, setNextCardIndex] = useState(0);
     const [currentView, setCurrentView] = useState('Past');
+    const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+
+    // Add resize listener to detect desktop vs mobile/tablet
+    useEffect(() => {
+        const handleResize = () => {
+            setIsDesktop(window.innerWidth >= 1024);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const getUniqueCardImage = useCallback((excludeIndices) => {
         const availableCards = tarotCards.filter((_, index) => !excludeIndices.includes(index));
@@ -35,8 +64,9 @@ const TarotCardFlip = () => {
 
     const handleCardClick = useCallback(
         (cardIndex) => {
-            // Only allow clicking on the next card in sequence (past, present, future)
-            if (isLoading || cards[cardIndex].flipped || isSelectingCard.current || cardIndex !== nextCardIndex) return;
+            // On desktop, allow clicking any card; on mobile/tablet, enforce sequence
+            if (isLoading || cards[cardIndex].flipped || isSelectingCard.current) return;
+            if (!isDesktop && cardIndex !== nextCardIndex) return;
 
             isSelectingCard.current = true;
 
@@ -61,27 +91,41 @@ const TarotCardFlip = () => {
                 });
             });
 
-            // Increment the next card index and update the view
-            const nextIndex = nextCardIndex + 1;
-            setNextCardIndex(nextIndex);
+            // On mobile/tablet, update the view to the next card
+            if (!isDesktop) {
+                // Increment the next card index
+                const nextIndex = nextCardIndex + 1;
+                setNextCardIndex(nextIndex);
 
-            // If we've drawn all three cards, move to the reading view
-            if (nextIndex >= 3) {
-                setTimeout(() => {
-                    setCurrentView('Reading');
-                }, 1500); // Give time for the card flip animation to complete
+                // If we've drawn all three cards, move to the reading view
+                if (nextIndex >= 3) {
+                    setTimeout(() => {
+                        setCurrentView('Reading');
+                    }, 1500); // Give time for the card flip animation to complete
+                } else {
+                    // Otherwise, move to the next card view
+                    setTimeout(() => {
+                        setCurrentView(VIEWS[nextIndex]);
+                    }, 1500); // Give time for the card flip animation to complete
+                }
             } else {
-                // Otherwise, move to the next card view
+                // On desktop, check if all cards are flipped and show reading
                 setTimeout(() => {
-                    setCurrentView(VIEWS[nextIndex]);
-                }, 1500); // Give time for the card flip animation to complete
+                    const allFlipped = cards.every((card, idx) => 
+                        idx === cardIndex ? true : card.flipped
+                    );
+
+                    if (allFlipped) {
+                        setCurrentView('Reading');
+                    }
+                }, 1500);
             }
 
             setTimeout(() => {
                 isSelectingCard.current = false;
             }, 500);
         },
-        [getUniqueCardImage, isLoading, cards, nextCardIndex]
+        [getUniqueCardImage, isLoading, cards, nextCardIndex, isDesktop]
     );
 
     useEffect(() => {
@@ -199,39 +243,9 @@ const TarotCardFlip = () => {
         setShowDeckAnimation(false);
         setTimeout(() => {
             setShowCards(true);
-            // Auto-flip the first card after a short delay
-            setTimeout(() => {
-                if (nextCardIndex === 0 && !isSelectingCard.current && !isLoading) {
-                    isSelectingCard.current = true;
-
-                    // Similar logic to handleCardClick but without the circular dependency
-                    setCards((currentCards) => {
-                        const newCard = getUniqueCardImage([]);
-
-                        return currentCards.map((card, index) => {
-                            if (index === 0) {
-                                return {
-                                    ...card,
-                                    flipped: true,
-                                    imageUrl: newCard.src,
-                                    name: newCard.name,
-                                    description: newCard.description,
-                                };
-                            }
-                            return card;
-                        });
-                    });
-
-                    // Update the next card index and view
-                    setNextCardIndex(1);
-                    setTimeout(() => {
-                        setCurrentView('Present');
-                        isSelectingCard.current = false;
-                    }, 1500);
-                }
-            }, 1000);
+            // No auto-flipping - user must click on cards
         }, 500);
-    }, [getUniqueCardImage, isLoading, nextCardIndex]);
+    }, []);
 
     if (showDeckAnimation) {
         return <DeckAnimation onAnimationComplete={handleAnimationComplete} />;
@@ -244,10 +258,10 @@ const TarotCardFlip = () => {
                     <div className={`cards-container ${showCards ? 'show-cards' : ''}`} data-view={currentView}>
                         {/* Only show the cards section if we're not in the Reading view */}
                         {currentView !== 'Reading' && (
-                            <div className="cards">
+                            <div className={`cards ${isDesktop ? 'desktop-view' : 'mobile-view'}`}>
                                 {cards.map((card, index) => {
-                                    // Only show the card for the current view
-                                    if (POSITIONS[index] !== currentView) return null;
+                                    // On desktop, show all cards; on mobile/tablet, only show the current view card
+                                    if (!isDesktop && POSITIONS[index] !== currentView) return null;
 
                                     return (
                                         <div
@@ -288,7 +302,7 @@ const TarotCardFlip = () => {
                                 {aiReading && !isLoading && (
                                     <div className="ai-reading">
                                         <h3>Your Mystical Reading</h3>
-                                        <p>{aiReading}</p>
+                                        <p dangerouslySetInnerHTML={{ __html: highlightCardNames(aiReading, cards) }}></p>
                                         <div className="purchase-link">
                                             <a href="https://www.amazon.com/Family-Tarot-Deck-Collaborative-Different/dp/B085BK9Z77/ref=sr_1_3?crid=AS2OT7OFW0B8&dib=eyJ2IjoiMSJ9.ueyEnZ7Am2y_KJ89XSP3kSJByiQlXR2ofi60RdshhISSxRIAxmc4XCK68Ccg8zuDBnrZYbzoT-5tZycQB89IM38szJmkmHYa6YEZ459AQwdDITHcZDGV-l7MYHnbYyyzzxVgzTPDPfB5UeHL6SG6TNXCfARvBP6uhqvFWzGHA8vrR70N390-3lPOnQmjxKDQvLuA85D_zguOPB0Fk71Z2moMf1tm1Vdsk82Oz8EfmVo.wgITTMg9FkWOD9IKTtdR3sss1CGlONlFWxDZSp5Pilg&dib_tag=se&keywords=tarot+deck+people+for+peace&qid=1752701157&sprefix=tarot+deck+people+for+peac%2Caps%2C133&sr=8-3" target="_blank" rel="noopener noreferrer">
                                                 Purchase This Tarot Deck
