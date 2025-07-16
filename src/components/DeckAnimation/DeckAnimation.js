@@ -28,40 +28,41 @@ const DeckAnimation = ({ onAnimationComplete }) => {
     };
 
     return (
-        <div className={`deck-animation-container ${fadeOut ? 'fade-out' : ''}`}>
+        <>
             <div className="stars">
-                <div className="twinkling">
-                    <div className="deck">
-                        {cards.map((card, index) => (
-                            <div
-                                key={card}
-                                className={`deck-card ${imageLoaded ? 'loaded' : ''}`}
-                                style={{
-                                    zIndex: cards.length - index,
-                                    animationName: index % 2 === 0 ? 'shuffleLeft' : 'shuffleRight',
-                                    animationDelay: `${index * 75}ms`
-                                }}
-                            >
-                                <img
-                                    src="/images/back-of-card.png"
-                                    alt="Back of card"
-                                    onLoad={handleImageLoad}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                    {showButton && imageLoaded && (
-                        <button
-                            className="start-reading-btn"
-                            onClick={handleStartReading}
-                            aria-label="Start Tarot Reading"
-                        >
-                            <span>Start Reading</span>
-                        </button>
-                    )}
-                </div>
+                <div className="twinkling"></div>
             </div>
-        </div>
+            <div className={`deck-animation-container ${fadeOut ? 'fade-out' : ''}`}>
+                <div className="deck">
+                    {cards.map((card, index) => (
+                        <div
+                            key={card}
+                            className={`deck-card ${imageLoaded ? 'loaded' : ''}`}
+                            style={{
+                                zIndex: cards.length - index,
+                                animationName: index % 2 === 0 ? 'shuffleLeft' : 'shuffleRight',
+                                animationDelay: `${index * 75}ms`
+                            }}
+                        >
+                            <img
+                                src="/images/back-of-card.png"
+                                alt="Back of card"
+                                onLoad={handleImageLoad}
+                            />
+                        </div>
+                    ))}
+                </div>
+                {showButton && imageLoaded && (
+                    <button
+                        className="start-reading-btn"
+                        onClick={handleStartReading}
+                        aria-label="Start Tarot Reading"
+                    >
+                        <span>Start Reading</span>
+                    </button>
+                )}
+            </div>
+        </>
     );
 };
 
