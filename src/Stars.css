@@ -77,7 +77,7 @@
     background-size: 400px 400px, 200px 200px;
     background-position: 25px 25px, 10px 15px;
     z-index: -1001;
-    animation: twinkle 3s ease-in-out infinite alternate;
+    animation: twinkle 1.5s ease-in-out infinite alternate;
 }
 
 .twinkling:after {
@@ -86,25 +86,31 @@
         radial-gradient(white, rgba(255,255,255,.2) 1px, transparent 1px);
     background-size: 300px 300px, 250px 250px;
     background-position: 45px 45px, 60px 85px;
-    animation: twinkle 2.5s ease-in-out infinite alternate-reverse;
+    animation: twinkle 1.2s ease-in-out infinite alternate-reverse;
 }
 
 /* Blinking animation */
 @keyframes twinkle {
-    0%, 100% { opacity: 0.7; }
+    0% { opacity: 0.5; }
+    25% { opacity: 0.7; }
     50% { opacity: 1; }
+    75% { opacity: 0.8; }
+    100% { opacity: 0.5; }
 }
 
 /* Additional blinking stars with different timing */
 .stars:before {
-    animation: twinkle-slow 4s ease-in-out infinite;
+    animation: twinkle-slow 1.8s ease-in-out infinite;
 }
 
 .stars:after {
-    animation: twinkle-slow 5s ease-in-out infinite alternate;
+    animation: twinkle-slow 2s ease-in-out infinite alternate;
 }
 
 @keyframes twinkle-slow {
-    0%, 100% { opacity: 0.8; }
-    50% { opacity: 1; }
+    0% { opacity: 0.6; transform: scale(0.98); }
+    25% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.02); }
+    75% { opacity: 0.9; transform: scale(1); }
+    100% { opacity: 0.6; transform: scale(0.98); }
 }
