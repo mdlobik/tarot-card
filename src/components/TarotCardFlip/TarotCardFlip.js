@@ -14,15 +14,16 @@ const VIEWS = ['Past', 'Present', 'Future', 'Reading'];
 const highlightCardNames = (text, cards) => {
     let highlightedText = text;
 
-    // Get the names of the flipped cards
-    const cardNames = cards
-        .filter(card => card.flipped && card.name)
-        .map(card => card.name);
+    // Get the flipped cards
+    const flippedCards = cards.filter(card => card.flipped && card.name);
 
-    // Replace each card name with a highlighted version
-    cardNames.forEach(name => {
-        const regex = new RegExp(`\\b${name}\\b`, 'g');
-        highlightedText = highlightedText.replace(regex, `<span class="card-highlight">${name}</span>`);
+    // Replace each card name with a highlighted version that includes the image URL
+    flippedCards.forEach(card => {
+        const regex = new RegExp(`\\b${card.name}\\b`, 'g');
+        highlightedText = highlightedText.replace(
+            regex, 
+            `<span class="card-highlight" data-image="${card.imageUrl}">${card.name}</span>`
+        );
     });
 
     return highlightedText;
@@ -55,6 +56,51 @@ const TarotCardFlip = () => {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    // Effect to add hover functionality to card highlights
+    useEffect(() => {
+        if (aiReading) {
+            // Wait for the DOM to update with the highlighted card names
+            setTimeout(() => {
+                const highlights = document.querySelectorAll('.card-highlight');
+
+                // Create a single tooltip element to reuse
+                let tooltip = document.querySelector('.card-image-tooltip');
+                if (!tooltip) {
+                    tooltip = document.createElement('div');
+                    tooltip.className = 'card-image-tooltip';
+                    document.body.appendChild(tooltip);
+                }
+
+                // Add event listeners to each highlight
+                highlights.forEach(highlight => {
+                    highlight.addEventListener('mouseenter', (e) => {
+                        const imageUrl = e.target.getAttribute('data-image');
+                        if (imageUrl) {
+                            // Position the tooltip relative to the highlight
+                            const rect = e.target.getBoundingClientRect();
+                            tooltip.style.backgroundImage = `url(${imageUrl})`;
+                            tooltip.style.top = `${rect.top}px`;
+                            tooltip.style.left = `${rect.left + rect.width / 2}px`;
+                            tooltip.classList.add('visible');
+                        }
+                    });
+
+                    highlight.addEventListener('mouseleave', () => {
+                        tooltip.classList.remove('visible');
+                    });
+                });
+            }, 100);
+        }
+
+        // Cleanup function
+        return () => {
+            const tooltip = document.querySelector('.card-image-tooltip');
+            if (tooltip) {
+                document.body.removeChild(tooltip);
+            }
+        };
+    }, [aiReading]);
 
     const getUniqueCardImage = useCallback((excludeIndices) => {
         const availableCards = tarotCards.filter((_, index) => !excludeIndices.includes(index));
@@ -123,7 +169,7 @@ const TarotCardFlip = () => {
 
             setTimeout(() => {
                 isSelectingCard.current = false;
-            }, 500);
+            }, 1000);
         },
         [getUniqueCardImage, isLoading, cards, nextCardIndex, isDesktop]
     );
@@ -256,8 +302,8 @@ const TarotCardFlip = () => {
             <div className="stars">
                 <div className="twinkling">
                     <div className={`cards-container ${showCards ? 'show-cards' : ''}`} data-view={currentView}>
-                        {/* Only show the cards section if we're not in the Reading view */}
-                        {currentView !== 'Reading' && (
+                        {/* Show cards section unless we're in the Reading view on mobile/tablet */}
+                        {(isDesktop || currentView !== 'Reading') && (
                             <div className={`cards ${isDesktop ? 'desktop-view' : 'mobile-view'}`}>
                                 {cards.map((card, index) => {
                                     // On desktop, show all cards; on mobile/tablet, only show the current view card

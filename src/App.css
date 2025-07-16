@@ -303,10 +303,31 @@
     color: white;
     text-align: center;
     opacity: 0;
-    animation: trippyFadeIn 2.5s ease-in-out forwards;
+    animation: trippyFadeIn 1.5s ease-in-out forwards;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
     position: relative;
     overflow: hidden;
+}
+
+/* Desktop layout adjustments */
+@media (min-width: 1024px) {
+    .cards-container[data-view="Reading"] {
+        display: grid;
+        grid-template-rows: auto auto;
+        gap: 20px;
+    }
+
+    .cards-container[data-view="Reading"] .cards {
+        grid-row: 1;
+    }
+
+    .cards-container[data-view="Reading"] .reading-container {
+        grid-row: 2;
+    }
+
+    .cards-container[data-view="Reading"] .button-container {
+        grid-row: 3;
+    }
 }
 
 .reading-container::before {
@@ -375,6 +396,35 @@
     transform: translateY(0);
     animation: card-pulse 2s infinite;
     padding: 0 3px;
+    position: relative;
+    cursor: pointer;
+}
+
+.ai-reading .card-highlight:hover {
+    color: #ffff00;
+    text-shadow: 0 0 8px rgba(255, 255, 0, 0.8);
+}
+
+/* Card image tooltip */
+.card-image-tooltip {
+    position: absolute;
+    left: 50%;
+    top: -20px;
+    transform: translateX(-50%) translateY(-100%);
+    width: 150px;
+    height: 225px; /* 3:2 aspect ratio */
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.card-image-tooltip.visible {
+    opacity: 1;
 }
 
 @keyframes card-pulse {
