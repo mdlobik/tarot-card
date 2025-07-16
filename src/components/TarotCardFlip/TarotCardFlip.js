@@ -8,6 +8,7 @@ import '../../App.css';
 import '../../Stars.css';
 
 const POSITIONS = ['Past', 'Present', 'Future'];
+const VIEWS = ['Past', 'Present', 'Future', 'Reading'];
 
 const TarotCardFlip = () => {
     const [cards, setCards] = useState(
@@ -24,6 +25,7 @@ const TarotCardFlip = () => {
     const [showCards, setShowCards] = useState(false);
     const isSelectingCard = useRef(false);
     const [nextCardIndex, setNextCardIndex] = useState(0);
+    const [currentView, setCurrentView] = useState('Past');
 
     const getUniqueCardImage = useCallback((excludeIndices) => {
         const availableCards = tarotCards.filter((_, index) => !excludeIndices.includes(index));
@@ -59,8 +61,21 @@ const TarotCardFlip = () => {
                 });
             });
 
-            // Increment the next card index
-            setNextCardIndex(prevIndex => prevIndex + 1);
+            // Increment the next card index and update the view
+            const nextIndex = nextCardIndex + 1;
+            setNextCardIndex(nextIndex);
+
+            // If we've drawn all three cards, move to the reading view
+            if (nextIndex >= 3) {
+                setTimeout(() => {
+                    setCurrentView('Reading');
+                }, 1500); // Give time for the card flip animation to complete
+            } else {
+                // Otherwise, move to the next card view
+                setTimeout(() => {
+                    setCurrentView(VIEWS[nextIndex]);
+                }, 1500); // Give time for the card flip animation to complete
+            }
 
             setTimeout(() => {
                 isSelectingCard.current = false;
@@ -159,6 +174,7 @@ const TarotCardFlip = () => {
         setIsLoading(false);
         setHasGeneratedReading(false);
         setNextCardIndex(0); // Reset the next card index to start with Past
+        setCurrentView('Past'); // Reset the view to Past
         setCards(
             cards.map((card) => ({ ...card, flipped: false, imageUrl: null, name: null, description: null }))
         );
@@ -181,8 +197,41 @@ const TarotCardFlip = () => {
 
     const handleAnimationComplete = useCallback(() => {
         setShowDeckAnimation(false);
-        setTimeout(() => setShowCards(true), 500);
-    }, []);
+        setTimeout(() => {
+            setShowCards(true);
+            // Auto-flip the first card after a short delay
+            setTimeout(() => {
+                if (nextCardIndex === 0 && !isSelectingCard.current && !isLoading) {
+                    isSelectingCard.current = true;
+
+                    // Similar logic to handleCardClick but without the circular dependency
+                    setCards((currentCards) => {
+                        const newCard = getUniqueCardImage([]);
+
+                        return currentCards.map((card, index) => {
+                            if (index === 0) {
+                                return {
+                                    ...card,
+                                    flipped: true,
+                                    imageUrl: newCard.src,
+                                    name: newCard.name,
+                                    description: newCard.description,
+                                };
+                            }
+                            return card;
+                        });
+                    });
+
+                    // Update the next card index and view
+                    setNextCardIndex(1);
+                    setTimeout(() => {
+                        setCurrentView('Present');
+                        isSelectingCard.current = false;
+                    }, 1500);
+                }
+            }, 1000);
+        }, 500);
+    }, [getUniqueCardImage, isLoading, nextCardIndex]);
 
     if (showDeckAnimation) {
         return <DeckAnimation onAnimationComplete={handleAnimationComplete} />;
@@ -192,58 +241,72 @@ const TarotCardFlip = () => {
         <div className="tarot-reading-container">
             <div className="stars">
                 <div className="twinkling">
-                    <div className={`cards-container ${showCards ? 'show-cards' : ''}`}>
-                        <div className="cards">
-                            {cards.map((card, index) => (
-                                <div
-                                    key={index}
-                                    className={`card-container ${card.flipped ? 'flipped' : ''}`}
-                                    onClick={() => handleCardClick(index)}
-                                    onMouseEnter={() => card.flipped && handleMouseEnter(card.imageUrl)}
-                                    onMouseLeave={handleMouseLeave}
-                                >
-                                    <div className="card">
-                                        <div className="card-front">
-                                            <img src="/images/back-of-card.png" alt="Card back" />
+                    <div className={`cards-container ${showCards ? 'show-cards' : ''}`} data-view={currentView}>
+                        {/* Only show the cards section if we're not in the Reading view */}
+                        {currentView !== 'Reading' && (
+                            <div className="cards">
+                                {cards.map((card, index) => {
+                                    // Only show the card for the current view
+                                    if (POSITIONS[index] !== currentView) return null;
+
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={`card-container ${card.flipped ? 'flipped' : ''}`}
+                                            onClick={() => handleCardClick(index)}
+                                            onMouseEnter={() => card.flipped && handleMouseEnter(card.imageUrl)}
+                                            onMouseLeave={handleMouseLeave}
+                                        >
+                                            <div className="card">
+                                                <div className="card-front">
+                                                    <img src="/images/back-of-card.png" alt="Card back" />
+                                                </div>
+                                                <div className="card-back">
+                                                    {card.imageUrl && <img src={card.imageUrl} alt={card.name} />}
+                                                </div>
+                                            </div>
+                                            <span className="card-label">{POSITIONS[index]}</span>
                                         </div>
-                                        <div className="card-back">
-                                            {card.imageUrl && <img src={card.imageUrl} alt={card.name} />}
+                                    );
+                                })}
+                            </div>
+                        )}
+
+                        {/* Only show the reading container if we're in the Reading view or loading */}
+                        {(currentView === 'Reading' || isLoading) && (
+                            <div className="reading-container">
+                                {isLoading && (
+                                    <div className="ai-reading loading">
+                                        <p>The spirits are contemplating your cards...</p>
+                                    </div>
+                                )}
+                                {error && !isLoading && (
+                                    <div className="ai-reading error">
+                                        <p>{error}</p>
+                                    </div>
+                                )}
+                                {aiReading && !isLoading && (
+                                    <div className="ai-reading">
+                                        <h3>Your Mystical Reading</h3>
+                                        <p>{aiReading}</p>
+                                        <div className="purchase-link">
+                                            <a href="https://www.amazon.com/Family-Tarot-Deck-Collaborative-Different/dp/B085BK9Z77/ref=sr_1_3?crid=AS2OT7OFW0B8&dib=eyJ2IjoiMSJ9.ueyEnZ7Am2y_KJ89XSP3kSJByiQlXR2ofi60RdshhISSxRIAxmc4XCK68Ccg8zuDBnrZYbzoT-5tZycQB89IM38szJmkmHYa6YEZ459AQwdDITHcZDGV-l7MYHnbYyyzzxVgzTPDPfB5UeHL6SG6TNXCfARvBP6uhqvFWzGHA8vrR70N390-3lPOnQmjxKDQvLuA85D_zguOPB0Fk71Z2moMf1tm1Vdsk82Oz8EfmVo.wgITTMg9FkWOD9IKTtdR3sss1CGlONlFWxDZSp5Pilg&dib_tag=se&keywords=tarot+deck+people+for+peace&qid=1752701157&sprefix=tarot+deck+people+for+peac%2Caps%2C133&sr=8-3" target="_blank" rel="noopener noreferrer">
+                                                Purchase This Tarot Deck
+                                            </a>
                                         </div>
                                     </div>
-                                    <span className="card-label">{POSITIONS[index]}</span>
-                                </div>
-                            ))}
-                        </div>
+                                )}
+                            </div>
+                        )}
 
-                        <div className="reading-container">
-                            {isLoading && (
-                                <div className="ai-reading loading">
-                                    <p>The spirits are contemplating your cards...</p>
-                                </div>
-                            )}
-                            {error && !isLoading && (
-                                <div className="ai-reading error">
-                                    <p>{error}</p>
-                                </div>
-                            )}
-                            {aiReading && !isLoading && (
-                                <div className="ai-reading">
-                                    <h3>Your Mystical Reading</h3>
-                                    <p>{aiReading}</p>
-                                    <div className="purchase-link">
-                                        <a href="https://www.amazon.com/Family-Tarot-Deck-Collaborative-Different/dp/B085BK9Z77/ref=sr_1_3?crid=AS2OT7OFW0B8&dib=eyJ2IjoiMSJ9.ueyEnZ7Am2y_KJ89XSP3kSJByiQlXR2ofi60RdshhISSxRIAxmc4XCK68Ccg8zuDBnrZYbzoT-5tZycQB89IM38szJmkmHYa6YEZ459AQwdDITHcZDGV-l7MYHnbYyyzzxVgzTPDPfB5UeHL6SG6TNXCfARvBP6uhqvFWzGHA8vrR70N390-3lPOnQmjxKDQvLuA85D_zguOPB0Fk71Z2moMf1tm1Vdsk82Oz8EfmVo.wgITTMg9FkWOD9IKTtdR3sss1CGlONlFWxDZSp5Pilg&dib_tag=se&keywords=tarot+deck+people+for+peace&qid=1752701157&sprefix=tarot+deck+people+for+peac%2Caps%2C133&sr=8-3" target="_blank" rel="noopener noreferrer">
-                                            Purchase This Tarot Deck
-                                        </a>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        <div className="button-container">
-                            <button className="draw-new-cards-btn" onClick={resetCards}>
-                                Draw New Cards
-                            </button>
-                        </div>
+                        {/* Only show the button in the Reading view */}
+                        {currentView === 'Reading' && (
+                            <div className="button-container">
+                                <button className="draw-new-cards-btn" onClick={resetCards}>
+                                    Draw New Cards
+                                </button>
+                            </div>
+                        )}
 
                         <Modal show={modalVisible} imageUrl={modalImage} onClose={handleCloseModal} />
                     </div>
