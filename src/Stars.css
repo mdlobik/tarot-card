@@ -56,8 +56,8 @@
     width: 100%;
     height: 100%;
     display: block;
-    z-index: -100;
-    animation: twinkle 9s ease-in-out infinite;
+    z-index: -1000;
+    animation: twinkle 4s ease-in-out infinite;
 }
 
 /* Create additional blinking stars */
@@ -76,8 +76,8 @@
         radial-gradient(white, rgba(255,255,255,.2) 1px, transparent 1px);
     background-size: 400px 400px, 200px 200px;
     background-position: 25px 25px, 10px 15px;
-    z-index: -1;
-    animation: twinkle 7s ease-in-out infinite alternate;
+    z-index: -1001;
+    animation: twinkle 3s ease-in-out infinite alternate;
 }
 
 .twinkling:after {
@@ -86,7 +86,7 @@
         radial-gradient(white, rgba(255,255,255,.2) 1px, transparent 1px);
     background-size: 300px 300px, 250px 250px;
     background-position: 45px 45px, 60px 85px;
-    animation: twinkle 5s ease-in-out infinite alternate-reverse;
+    animation: twinkle 2.5s ease-in-out infinite alternate-reverse;
 }
 
 /* Blinking animation */
@@ -97,11 +97,11 @@
 
 /* Additional blinking stars with different timing */
 .stars:before {
-    animation: twinkle-slow 8s ease-in-out infinite;
+    animation: twinkle-slow 4s ease-in-out infinite;
 }
 
 .stars:after {
-    animation: twinkle-slow 10s ease-in-out infinite alternate;
+    animation: twinkle-slow 5s ease-in-out infinite alternate;
 }
 
 @keyframes twinkle-slow {
