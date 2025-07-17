@@ -38,8 +38,6 @@
 .cards.mobile-view {
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 80vh; /* Add minimum height to enable vertical centering */
 }
 
 .card-container {
@@ -586,12 +584,6 @@
 
 /* Mobile View */
 @media (max-width: 600px) {
-    .tarot-reading-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-    }
     .start-reading-btn,
     .draw-new-cards-btn {
         width: 80%;
@@ -610,9 +602,7 @@
 
     .card-container {
         margin-bottom: 30px;
-        max-width: 90%; /* Make cards take up 90% of screen width on mobile */
-        margin-left: auto;
-        margin-right: auto;
+        max-width: 80%; /* Make cards take up 80% of screen width on mobile */
     }
 
     .reading-container {
@@ -636,37 +626,6 @@
         font-size: 22px;
         padding: 8px 16px;
         margin-top: 20px;
-    }
-
-    /* Style Draw New Cards button like Next Card button on mobile */
-    .draw-new-cards-btn {
-        display: block;
-        width: 80%;
-        max-width: 200px;
-        margin: 0 auto;
-        padding: 8px 16px;
-        background: linear-gradient(
-            115deg,
-            #4fcf70,
-            #fad648,
-            #a767e5,
-            #12bcfe,
-            #44ce7b
-        );
-        border: none;
-        border-radius: 10px;
-        color: white;
-        font-family: "Amatic SC", sans-serif;
-        font-size: 22px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    .draw-new-cards-btn:hover {
-        transform: scale(1.05);
-        animation: animate 0.4s linear infinite;
     }
 
     /* Disable hover effects on mobile */
