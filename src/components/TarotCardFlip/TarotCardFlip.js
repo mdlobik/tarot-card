@@ -223,8 +223,8 @@ const TarotCardFlip = () => {
                         `/api/tarot`,
                         { cards: selectedCards },
                         {
-                            headers: { 'Content-Type': 'application/json' },
-                            timeout: 30000, // Increased timeout to 30 seconds
+                            headers: { 'Content-Type': 'application/json' }
+                            // Removed timeout to allow unlimited time for LLM response generation
                         }
                     );
 

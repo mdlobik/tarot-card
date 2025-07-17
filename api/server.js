@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { default: Groq } = require('groq-sdk');
+const { Groq } = require('groq');
 
 // Load environment variables
 const path = require('path');
@@ -34,6 +34,25 @@ console.log('groqApiKey value:', groqApiKey ? `${groqApiKey.substring(0, 5)}... 
 
 let genAI;
 let groqClient;
+
+async function generateReadingWithGroq(past, present, future) {
+    const resp = await groqClient.chat.completions.create({
+        model: 'llama3-8b-8192',
+        messages: [
+            { role: 'system', content: 'You are a professional tarot reader.' },
+            { role: 'user', content: `
+Past: ${past.name} — ${past.desc}
+Present: ${present.name} — ${present.desc}
+Future: ${future.name} — ${future.desc}
+
+Write a cohesive reading in around 200–300 words.
+      ` }
+        ],
+        // Removed token limit to allow for unlimited response length
+    });
+    return resp.choices[0].message.content;
+}
+
 
 // Initialize Gemini
 try {
@@ -903,6 +922,78 @@ app.get('/api/test-gemini', async (req, res) => {
                 apiKeyExists: !!geminiApiKey,
                 apiKeyLength: geminiApiKey ? geminiApiKey.length : 0,
                 apiKeyPrefix: geminiApiKey ? geminiApiKey.substring(0, 5) + '...' : 'undefined'
+            }
+        });
+    }
+});
+
+// Groq API test endpoint
+app.get('/api/test-groq', async (req, res) => {
+    console.log('Received request to /api/test-groq endpoint');
+    try {
+        // Check if Groq API is initialized
+        if (!groqClient) {
+            console.log('Groq API not initialized for test');
+            return res.status(500).json({
+                success: false,
+                message: 'Groq API not initialized',
+                details: {
+                    apiKeyExists: !!groqApiKey,
+                    apiKeyLength: groqApiKey ? groqApiKey.length : 0,
+                    apiKeyPrefix: groqApiKey ? groqApiKey.substring(0, 5) + '...' : 'undefined'
+                }
+            });
+        }
+
+        console.log('Groq API initialized, testing with a simple prompt');
+        
+        // Simple test prompt
+        const prompt = "Write a one-sentence test response to verify the API is working.";
+        
+        console.log('Sending test prompt to Groq API');
+        
+        // Generate content using Groq
+        const completion = await groqClient.chat.completions.create({
+            messages: [
+                { role: "system", content: "You are a helpful assistant." },
+                { role: "user", content: prompt }
+            ],
+            model: "llama3-70b-8192",
+            temperature: 0.7,
+            max_tokens: 100,
+        });
+        
+        console.log('Received response from Groq API');
+        
+        if (completion.choices && completion.choices.length > 0) {
+            const text = completion.choices[0].message.content;
+            console.log('Response text:', text);
+            
+            // Return success response
+            return res.status(200).json({
+                success: true,
+                message: 'Groq API is working correctly',
+                response: text
+            });
+        } else {
+            throw new Error('No content in Groq response');
+        }
+    } catch (error) {
+        console.error('Error testing Groq API:', error);
+        
+        // Return detailed error information
+        return res.status(500).json({
+            success: false,
+            message: 'Error testing Groq API',
+            error: {
+                name: error.name,
+                message: error.message,
+                details: error.toString()
+            },
+            apiDetails: {
+                apiKeyExists: !!groqApiKey,
+                apiKeyLength: groqApiKey ? groqApiKey.length : 0,
+                apiKeyPrefix: groqApiKey ? groqApiKey.substring(0, 5) + '...' : 'undefined'
             }
         });
     }
