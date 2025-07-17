@@ -282,23 +282,17 @@ const TarotCardFlip = () => {
     }, [cards, hasGeneratedReading]);
 
     const resetCards = useCallback(() => {
-        // Set transitioning to true to trigger fade-out animation
-        setIsTransitioning(true);
-        
-        // Wait for the fade-out animation to complete (1 second)
-        setTimeout(() => {
-            setAiReading('');
-            setError(null);
-            setIsLoading(false);
-            setHasGeneratedReading(false);
-            setNextCardIndex(0); // Reset the next card index to start with Past
-            setCurrentView('Past'); // Reset the view to Past
-            setShowNextButton(false); // Hide the next button
-            setIsTransitioning(false); // Reset transition state
-            setCards(
-                cards.map((card) => ({ ...card, flipped: false, imageUrl: null, name: null, description: null }))
-            );
-        }, 1000); // 1 second delay to match the CSS transition duration
+        setAiReading('');
+        setError(null);
+        setIsLoading(false);
+        setHasGeneratedReading(false);
+        setNextCardIndex(0); // Reset the next card index to start with Past
+        setCurrentView('Past'); // Reset the view to Past
+        setShowNextButton(false); // Hide the next button
+        setIsTransitioning(false); // Reset transition state
+        setCards(
+            cards.map((card) => ({ ...card, flipped: false, imageUrl: null, name: null, description: null }))
+        );
     }, [cards]);
 
     const handleMouseEnter = useCallback((imageUrl) => {
