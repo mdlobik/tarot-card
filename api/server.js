@@ -4,7 +4,15 @@ const dotenv = require('dotenv');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 // Load environment variables
-dotenv.config();
+const path = require('path');
+const envPath = path.resolve(process.cwd(), '.env');
+console.log('Loading environment variables from:', envPath);
+dotenv.config({ path: envPath });
+console.log('Environment variables loaded');
+console.log('GEMINI_API_KEY exists:', !!process.env.GEMINI_API_KEY);
+console.log('GEMINI_API_KEY length:', process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.length : 0);
+// Don't log the full API key for security reasons, just the first few characters
+console.log('GEMINI_API_KEY prefix:', process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.substring(0, 5) + '...' : 'undefined');
 
 // Initialize express app
 const app = express();
@@ -16,10 +24,15 @@ app.use(express.json());
 
 // Initialize Gemini API
 const geminiApiKey = process.env.GEMINI_API_KEY;
+console.log('geminiApiKey value:', geminiApiKey ? `${geminiApiKey.substring(0, 5)}... (${geminiApiKey.length} chars)` : 'undefined');
+console.log('Is key valid format:', geminiApiKey && geminiApiKey !== 'your_gemini_api_key_here');
+
 let genAI;
 try {
     if (geminiApiKey && geminiApiKey !== 'your_gemini_api_key_here') {
+        console.log('Attempting to initialize Gemini API with key');
         genAI = new GoogleGenerativeAI(geminiApiKey);
+        console.log('Gemini API initialized successfully:', !!genAI);
     } else {
         console.warn('Gemini API key not found or using placeholder. Falling back to local generation.');
     }
@@ -27,25 +40,41 @@ try {
     console.error('Error initializing Gemini API:', error);
 }
 
-// Function to generate tarot readings using Gemini API
+// Function to generate tarot readings using Gemini API with retry mechanism
 async function generateTarotReadingWithGemini(pastCard, presentCard, futureCard) {
-    try {
-        if (!genAI) {
-            throw new Error('Gemini API not initialized');
-        }
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 1000; // 1 second delay between retries
+    
+    // Helper function to delay execution
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    
+    // Helper function for the actual API call with retry logic
+    async function callGeminiWithRetry(attempt = 1) {
+        try {
+            console.log(`Starting generateTarotReadingWithGemini function (attempt ${attempt} of ${MAX_RETRIES})`);
+            
+            if (!genAI) {
+                console.error('Gemini API not initialized, genAI is null or undefined');
+                throw new Error('Gemini API not initialized');
+            }
+            
+            console.log('Creating model instance with gemini-1.5-pro');
+            
+            // Create a model instance
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+            console.log('Model instance created successfully:', !!model);
 
-        // Create a model instance
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-
-        // Format the cards for the prompt
-        const cardsInfo = `
+            // Format the cards for the prompt
+            const cardsInfo = `
 Past Card: ${pastCard.name} - ${pastCard.description}
 Present Card: ${presentCard.name} - ${presentCard.description}
 Future Card: ${futureCard.name} - ${futureCard.description}
-        `.trim();
+            `.trim();
+            
+            console.log('Cards info formatted for prompt');
 
-        // Create the prompt for Gemini
-        const prompt = `
+            // Create the prompt for Gemini
+            const prompt = `
 You are an expert tarot reader with deep knowledge of tarot symbolism and interpretation. 
 Please provide a detailed and personalized tarot reading based on the following three-card spread (Past, Present, Future):
 
@@ -66,16 +95,49 @@ Format the reading as follows:
 - End with advice based on the spread
 
 The reading should be personal, insightful, and around 300-400 words total.
-        `.trim();
+            `.trim();
+            
+            console.log('Prompt created, length:', prompt.length);
+            console.log(`Calling Gemini API to generate content (attempt ${attempt})...`);
 
-        // Generate content
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
-
-        return text;
+            // Generate content
+            const result = await model.generateContent(prompt);
+            console.log('Content generated successfully, getting response');
+            
+            const response = await result.response;
+            console.log('Response received, extracting text');
+            
+            const text = response.text();
+            console.log('Text extracted, length:', text.length);
+            
+            return text;
+            
+        } catch (error) {
+            console.error(`Error during API call to Gemini (attempt ${attempt}):`, error);
+            console.error('Error name:', error.name);
+            console.error('Error message:', error.message);
+            
+            // If we haven't reached max retries, try again after a delay
+            if (attempt < MAX_RETRIES) {
+                console.log(`Retrying in ${RETRY_DELAY}ms... (${attempt} of ${MAX_RETRIES} attempts)`);
+                await delay(RETRY_DELAY);
+                return callGeminiWithRetry(attempt + 1);
+            }
+            
+            // If we've reached max retries, throw the error
+            console.error(`Max retries (${MAX_RETRIES}) reached. Giving up.`);
+            throw error;
+        }
+    }
+    
+    // Start the retry process
+    try {
+        return await callGeminiWithRetry();
     } catch (error) {
-        console.error('Error generating reading with Gemini:', error);
+        console.error('All attempts to generate reading with Gemini failed:', error);
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
         throw error;
     }
 }
@@ -552,17 +614,82 @@ ${advice} The unique combination of ${pastCard.name}, ${presentCard.name}, and $
   `.trim();
 }
 
-// Testing endpoint
+// Basic server test endpoint
 app.get('/api/test', (req, res) => {
     res.status(200).json({ message: 'Server is accessible' });
 });
 
+// Gemini API test endpoint
+app.get('/api/test-gemini', async (req, res) => {
+    console.log('Received request to /api/test-gemini endpoint');
+    try {
+        // Check if Gemini API is initialized
+        if (!genAI) {
+            console.log('Gemini API not initialized for test');
+            return res.status(500).json({
+                success: false,
+                message: 'Gemini API not initialized',
+                details: {
+                    apiKeyExists: !!geminiApiKey,
+                    apiKeyLength: geminiApiKey ? geminiApiKey.length : 0,
+                    apiKeyPrefix: geminiApiKey ? geminiApiKey.substring(0, 5) + '...' : 'undefined'
+                }
+            });
+        }
+
+        console.log('Gemini API initialized, testing with a simple prompt');
+        
+        // Create a model instance
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+        
+        // Simple test prompt
+        const prompt = "Write a one-sentence test response to verify the API is working.";
+        
+        console.log('Sending test prompt to Gemini API');
+        
+        // Generate content
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        
+        console.log('Received response from Gemini API:', text);
+        
+        // Return success response
+        return res.status(200).json({
+            success: true,
+            message: 'Gemini API is working correctly',
+            response: text
+        });
+    } catch (error) {
+        console.error('Error testing Gemini API:', error);
+        
+        // Return detailed error information
+        return res.status(500).json({
+            success: false,
+            message: 'Error testing Gemini API',
+            error: {
+                name: error.name,
+                message: error.message,
+                details: error.toString()
+            },
+            apiDetails: {
+                apiKeyExists: !!geminiApiKey,
+                apiKeyLength: geminiApiKey ? geminiApiKey.length : 0,
+                apiKeyPrefix: geminiApiKey ? geminiApiKey.substring(0, 5) + '...' : 'undefined'
+            }
+        });
+    }
+});
+
 // Main tarot reading endpoint
 app.post('/api/tarot', async (req, res) => {
+    console.log('Received request to /api/tarot endpoint');
     try {
         const { cards } = req.body;
+        console.log('Request body contains cards:', !!cards);
 
         if (!cards || !Array.isArray(cards) || cards.length !== 3) {
+            console.log('Invalid request: cards not provided or not an array of 3 items');
             return res.status(400).json({
                 error: 'Invalid request. Please provide exactly 3 cards with position, name, and description.'
             });
@@ -572,36 +699,64 @@ app.post('/api/tarot', async (req, res) => {
         const pastCard = cards.find(card => card.position === 'Past');
         const presentCard = cards.find(card => card.position === 'Present');
         const futureCard = cards.find(card => card.position === 'Future');
+        
+        console.log('Cards extracted by position:', {
+            past: pastCard?.name,
+            present: presentCard?.name,
+            future: futureCard?.name
+        });
 
         let reading;
         let usedGemini = false;
 
+        // Log the current state of the Gemini API variables
+        console.log('Gemini API state check:');
+        console.log('- genAI initialized:', !!genAI);
+        console.log('- geminiApiKey exists:', !!geminiApiKey);
+        console.log('- geminiApiKey is not placeholder:', geminiApiKey !== 'your_gemini_api_key_here');
+        console.log('- Should use Gemini API:', !!(genAI && geminiApiKey && geminiApiKey !== 'your_gemini_api_key_here'));
+
         // Try to generate reading with Gemini if API is initialized
         if (genAI && geminiApiKey && geminiApiKey !== 'your_gemini_api_key_here') {
             try {
-                console.log('Generating tarot reading with Gemini API...');
+                console.log('Attempting to generate tarot reading with Gemini API...');
                 reading = await generateTarotReadingWithGemini(pastCard, presentCard, futureCard);
                 usedGemini = true;
                 console.log('Successfully generated reading with Gemini API');
+                console.log('Reading length:', reading.length);
             } catch (geminiError) {
                 console.error('Error with Gemini API, falling back to local generation:', geminiError);
                 // Fall back to local generation
+                console.log('Falling back to local generation');
                 reading = generateTarotReading(pastCard, presentCard, futureCard);
+                console.log('Successfully generated reading locally');
             }
         } else {
             // Use local generation if Gemini is not available
-            console.log('Using local generation for tarot reading');
+            console.log('Conditions for using Gemini API not met, using local generation');
             reading = generateTarotReading(pastCard, presentCard, futureCard);
+            console.log('Successfully generated reading locally');
         }
 
-        // Send the generated reading
-        res.status(200).json({
+        // Prepare the response
+        const response = {
             reading: reading,
             source: usedGemini ? 'gemini' : 'local'
-        });
+        };
+        
+        console.log('Sending response with source:', response.source);
+        
+        // Send the generated reading
+        res.status(200).json(response);
 
     } catch (error) {
         console.error('Error generating tarot reading:', error);
+        console.error('Error details:', {
+            name: error.name,
+            message: error.message,
+            stack: error.stack
+        });
+        
         res.status(500).json({
             error: 'Failed to generate reading. The mystical forces are unclear at this moment.'
         });
