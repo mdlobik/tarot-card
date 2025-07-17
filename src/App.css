@@ -633,16 +633,3 @@
         display: none;
     }
 }
-
-/* Add a message to indicate the current step */
-.cards-container::before {
-    content: attr(data-view);
-    display: block;
-    text-align: center;
-    color: white;
-    font-family: "Amatic SC", sans-serif;
-    font-size: 36px;
-    margin-bottom: 20px;
-    font-weight: bold;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
