@@ -82,9 +82,8 @@ try {
 
 // Function to generate tarot readings using Gemini API with retry mechanism
 async function generateTarotReadingWithGemini(pastCard, presentCard, futureCard) {
-    // Increased retries and delay to allow more time for LLM response generation
-    const MAX_RETRIES = 5;
-    const RETRY_DELAY = 5000; // 5 second delay between retries
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 1000; // 1 second delay between retries
     
     // Helper function to delay execution
     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -185,9 +184,8 @@ The reading should be personal, insightful, and around 300-400 words total.
 
 // Function to generate tarot readings using Groq API with retry mechanism
 async function generateTarotReadingWithGroq(pastCard, presentCard, futureCard) {
-    // Increased retries and delay to allow more time for LLM response generation
-    const MAX_RETRIES = 5;
-    const RETRY_DELAY = 5000; // 5 second delay between retries
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 1000; // 1 second delay between retries
     
     // Helper function to delay execution
     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -248,7 +246,7 @@ The reading should be personal, insightful, and around 300-400 words total.
                 ],
                 model: "llama3-70b-8192",  // Using LLaMA-3-70b model
                 temperature: 0.7,
-                // Removed token limit to allow for unlimited response length
+                max_tokens: 1024,
             });
             
             console.log('Content generated successfully with Groq');
@@ -293,9 +291,8 @@ The reading should be personal, insightful, and around 300-400 words total.
 
 // Function to generate a combined LLM reading that takes card order into account
 async function generateCombinedLLMReading(pastCard, presentCard, futureCard) {
-    // Increased retries and delay to allow more time for LLM response generation
-    const MAX_RETRIES = 5;
-    const RETRY_DELAY = 5000; // 5 second delay between retries
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 1000; // 1 second delay between retries
     
     // Helper function to delay execution
     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -963,7 +960,7 @@ app.get('/api/test-groq', async (req, res) => {
             ],
             model: "llama3-70b-8192",
             temperature: 0.7,
-            // Removed token limit to allow for unlimited response length
+            max_tokens: 100,
         });
         
         console.log('Received response from Groq API');
