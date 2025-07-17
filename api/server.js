@@ -1,5 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+const dotenv = require('dotenv');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+
+// Load environment variables
+dotenv.config();
 
 // Initialize express app
 const app = express();
@@ -8,6 +13,72 @@ const port = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Initialize Gemini API
+const geminiApiKey = process.env.GEMINI_API_KEY;
+let genAI;
+try {
+    if (geminiApiKey && geminiApiKey !== 'your_gemini_api_key_here') {
+        genAI = new GoogleGenerativeAI(geminiApiKey);
+    } else {
+        console.warn('Gemini API key not found or using placeholder. Falling back to local generation.');
+    }
+} catch (error) {
+    console.error('Error initializing Gemini API:', error);
+}
+
+// Function to generate tarot readings using Gemini API
+async function generateTarotReadingWithGemini(pastCard, presentCard, futureCard) {
+    try {
+        if (!genAI) {
+            throw new Error('Gemini API not initialized');
+        }
+
+        // Create a model instance
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+
+        // Format the cards for the prompt
+        const cardsInfo = `
+Past Card: ${pastCard.name} - ${pastCard.description}
+Present Card: ${presentCard.name} - ${presentCard.description}
+Future Card: ${futureCard.name} - ${futureCard.description}
+        `.trim();
+
+        // Create the prompt for Gemini
+        const prompt = `
+You are an expert tarot reader with deep knowledge of tarot symbolism and interpretation. 
+Please provide a detailed and personalized tarot reading based on the following three-card spread (Past, Present, Future):
+
+${cardsInfo}
+
+Your reading should include:
+1. An interpretation of each card in its position (Past, Present, Future)
+2. How the cards connect and influence each other
+3. Patterns or themes across the spread (such as suits, elements, or archetypes)
+4. Specific insights for any notable card combinations
+5. Practical advice based on the overall reading
+
+Format the reading as follows:
+- Start with the Past card interpretation
+- Then the Present card interpretation
+- Then the Future card interpretation
+- Follow with connections between the cards
+- End with advice based on the spread
+
+The reading should be personal, insightful, and around 300-400 words total.
+        `.trim();
+
+        // Generate content
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+
+        return text;
+    } catch (error) {
+        console.error('Error generating reading with Gemini:', error);
+        throw error;
+    }
+}
 
 // Function to generate tarot readings locally
 function generateTarotReading(pastCard, presentCard, futureCard) {
@@ -497,22 +568,36 @@ app.post('/api/tarot', async (req, res) => {
             });
         }
 
-        // Format the cards for the prompt
-        const formattedCards = cards.map(card =>
-            `${card.position}: ${card.name} - ${card.description}`
-        ).join('\n\n');
-
-        // Instead of calling the API, let's generate a reading directly
-        // This avoids timeouts and API rate limiting issues
+        // Extract the cards by position
         const pastCard = cards.find(card => card.position === 'Past');
         const presentCard = cards.find(card => card.position === 'Present');
         const futureCard = cards.find(card => card.position === 'Future');
 
-        const reading = generateTarotReading(pastCard, presentCard, futureCard);
+        let reading;
+        let usedGemini = false;
+
+        // Try to generate reading with Gemini if API is initialized
+        if (genAI && geminiApiKey && geminiApiKey !== 'your_gemini_api_key_here') {
+            try {
+                console.log('Generating tarot reading with Gemini API...');
+                reading = await generateTarotReadingWithGemini(pastCard, presentCard, futureCard);
+                usedGemini = true;
+                console.log('Successfully generated reading with Gemini API');
+            } catch (geminiError) {
+                console.error('Error with Gemini API, falling back to local generation:', geminiError);
+                // Fall back to local generation
+                reading = generateTarotReading(pastCard, presentCard, futureCard);
+            }
+        } else {
+            // Use local generation if Gemini is not available
+            console.log('Using local generation for tarot reading');
+            reading = generateTarotReading(pastCard, presentCard, futureCard);
+        }
 
         // Send the generated reading
         res.status(200).json({
-            reading: reading
+            reading: reading,
+            source: usedGemini ? 'gemini' : 'local'
         });
 
     } catch (error) {
