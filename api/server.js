@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { Groq } = require('groq');
+const { default: Groq } = require('groq-sdk');
 
 // Load environment variables
 const path = require('path');
