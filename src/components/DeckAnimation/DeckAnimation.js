@@ -9,7 +9,7 @@ const DeckAnimation = ({ onAnimationComplete }) => {
 
     useEffect(() => {
         const totalCards = 20;
-        const animationDuration = 750; // Increased for smoother animation
+        const animationDuration = 750;
 
         setCards(Array.from({ length: totalCards }, (_, i) => i));
 
@@ -53,13 +53,15 @@ const DeckAnimation = ({ onAnimationComplete }) => {
                     ))}
                 </div>
                 {showButton && imageLoaded && (
-                    <button
-                        className="start-reading-btn"
-                        onClick={handleStartReading}
-                        aria-label="Start Tarot Reading"
-                    >
-                        <span>Start Reading</span>
-                    </button>
+                    <div className="button-wrapper">
+                        <button
+                            className="start-reading-btn"
+                            onClick={handleStartReading}
+                            aria-label="Start Tarot Reading"
+                        >
+                            <span>Start Reading</span>
+                        </button>
+                    </div>
                 )}
             </div>
         </>

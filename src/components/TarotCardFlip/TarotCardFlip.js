@@ -325,94 +325,95 @@ const TarotCardFlip = () => {
     }
 
     return (
-        <div className="tarot-reading-container">
+        <>
             <div className="stars">
-                <div className="twinkling">
-                    <div className={`cards-container ${showCards ? 'show-cards' : ''}`} data-view={currentView}>
-                        {/* Show cards section unless we're in the Reading view on mobile/tablet */}
-                        {(isDesktop || currentView !== 'Reading') && (
-                            <div className={`cards ${isDesktop ? 'desktop-view' : 'mobile-view'} ${isTransitioning ? 'transitioning' : ''}`}>
-                                {cards.map((card, index) => {
-                                    // On desktop, show all cards; on mobile/tablet, only show the current view card
-                                    if (!isDesktop && POSITIONS[index] !== currentView) return null;
+                <div className="twinkling"></div>
+            </div>
+            <div className="tarot-reading-container">
+                <div className={`cards-container ${showCards ? 'show-cards' : ''}`} data-view={currentView}>
+                    {/* Show cards section unless we're in the Reading view on mobile/tablet */}
+                    {(isDesktop || currentView !== 'Reading') && (
+                        <div className={`cards ${isDesktop ? 'desktop-view' : 'mobile-view'} ${isTransitioning ? 'transitioning' : ''}`}>
+                            {cards.map((card, index) => {
+                                // On desktop, show all cards; on mobile/tablet, only show the current view card
+                                if (!isDesktop && POSITIONS[index] !== currentView) return null;
 
-                                    return (
-                                        <div
-                                            key={index}
-                                            className={`card-container ${card.flipped ? 'flipped' : ''}`}
-                                            onClick={() => handleCardClick(index)}
-                                            onMouseEnter={() => isDesktop && card.flipped && handleMouseEnter(card.imageUrl)}
-                                            onMouseLeave={handleMouseLeave}
-                                        >
-                                            <div className="card">
-                                                <div className="card-front">
-                                                    <img src="/images/back-of-card.png" alt="Card back" />
-                                                </div>
-                                                <div className="card-back">
-                                                    {card.imageUrl && <img src={card.imageUrl} alt={card.name} />}
-                                                </div>
+                                return (
+                                    <div
+                                        key={index}
+                                        className={`card-container ${card.flipped ? 'flipped' : ''}`}
+                                        onClick={() => handleCardClick(index)}
+                                        onMouseEnter={() => isDesktop && card.flipped && handleMouseEnter(card.imageUrl)}
+                                        onMouseLeave={handleMouseLeave}
+                                    >
+                                        <div className="card">
+                                            <div className="card-front">
+                                                <img src="/images/back-of-card.png" alt="Card back" />
                                             </div>
-                                            <span className="card-label">{POSITIONS[index]}</span>
-
-                                            {/* Show Next button on mobile after card is flipped */}
-                                            {!isDesktop && card.flipped && showNextButton && (
-                                                <button 
-                                                    className="next-button" 
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleNextClick();
-                                                    }}
-                                                >
-                                                    {nextCardIndex >= 2 ? "See Reading" : "Next Card"}
-                                                </button>
-                                            )}
+                                            <div className="card-back">
+                                                {card.imageUrl && <img src={card.imageUrl} alt={card.name} />}
+                                            </div>
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        )}
+                                        <span className="card-label">{POSITIONS[index]}</span>
 
-                        {/* Only show the reading container if we're in the Reading view or loading */}
-                        {(currentView === 'Reading' || isLoading) && (
-                            <div className={`reading-container ${isTransitioning ? 'transitioning' : ''}`}>
-                                {isLoading && (
-                                    <div className="ai-reading loading">
-                                        <p>The spirits are contemplating your cards...</p>
+                                        {/* Show Next button on mobile after card is flipped */}
+                                        {!isDesktop && card.flipped && showNextButton && (
+                                            <button 
+                                                className="next-button" 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleNextClick();
+                                                }}
+                                            >
+                                                {nextCardIndex >= 2 ? "See Reading" : "Next Card"}
+                                            </button>
+                                        )}
                                     </div>
-                                )}
-                                {error && !isLoading && (
-                                    <div className="ai-reading error">
-                                        <p>{error}</p>
-                                    </div>
-                                )}
-                                {aiReading && !isLoading && (
-                                    <div className="ai-reading">
-                                        <h3>Your Mystical Reading</h3>
-                                        <p dangerouslySetInnerHTML={{ __html: highlightCardNames(aiReading, cards) }}></p>
-                                        <div className="purchase-link">
-                                            <a href="https://www.amazon.com/Family-Tarot-Deck-Collaborative-Different/dp/B085BK9Z77/ref=sr_1_3?crid=AS2OT7OFW0B8&dib=eyJ2IjoiMSJ9.ueyEnZ7Am2y_KJ89XSP3kSJByiQlXR2ofi60RdshhISSxRIAxmc4XCK68Ccg8zuDBnrZYbzoT-5tZycQB89IM38szJmkmHYa6YEZ459AQwdDITHcZDGV-l7MYHnbYyyzzxVgzTPDPfB5UeHL6SG6TNXCfARvBP6uhqvFWzGHA8vrR70N390-3lPOnQmjxKDQvLuA85D_zguOPB0Fk71Z2moMf1tm1Vdsk82Oz8EfmVo.wgITTMg9FkWOD9IKTtdR3sss1CGlONlFWxDZSp5Pilg&dib_tag=se&keywords=tarot+deck+people+for+peace&qid=1752701157&sprefix=tarot+deck+people+for+peac%2Caps%2C133&sr=8-3" target="_blank" rel="noopener noreferrer">
-                                                Purchase This Tarot Deck
-                                            </a>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
+                                );
+                            })}
+                        </div>
+                    )}
 
-                        {/* Only show the button in the Reading view */}
-                        {currentView === 'Reading' && (
-                            <div className="button-container">
-                                <button className="draw-new-cards-btn" onClick={resetCards}>
-                                    Draw New Cards
-                                </button>
-                            </div>
-                        )}
+                    {/* Only show the reading container if we're in the Reading view or loading */}
+                    {(currentView === 'Reading' || isLoading) && (
+                        <div className={`reading-container ${isTransitioning ? 'transitioning' : ''}`}>
+                            {isLoading && (
+                                <div className="ai-reading loading">
+                                    <p>The spirits are contemplating your cards...</p>
+                                </div>
+                            )}
+                            {error && !isLoading && (
+                                <div className="ai-reading error">
+                                    <p>{error}</p>
+                                </div>
+                            )}
+                            {aiReading && !isLoading && (
+                                <div className="ai-reading">
+                                    <h3>Your Mystical Reading</h3>
+                                    <p dangerouslySetInnerHTML={{ __html: highlightCardNames(aiReading, cards) }}></p>
+                                    <div className="purchase-link">
+                                        <a href="https://www.amazon.com/Family-Tarot-Deck-Collaborative-Different/dp/B085BK9Z77/ref=sr_1_3?crid=AS2OT7OFW0B8&dib=eyJ2IjoiMSJ9.ueyEnZ7Am2y_KJ89XSP3kSJByiQlXR2ofi60RdshhISSxRIAxmc4XCK68Ccg8zuDBnrZYbzoT-5tZycQB89IM38szJmkmHYa6YEZ459AQwdDITHcZDGV-l7MYHnbYyyzzxVgzTPDPfB5UeHL6SG6TNXCfARvBP6uhqvFWzGHA8vrR70N390-3lPOnQmjxKDQvLuA85D_zguOPB0Fk71Z2moMf1tm1Vdsk82Oz8EfmVo.wgITTMg9FkWOD9IKTtdR3sss1CGlONlFWxDZSp5Pilg&dib_tag=se&keywords=tarot+deck+people+for+peace&qid=1752701157&sprefix=tarot+deck+people+for+peac%2Caps%2C133&sr=8-3" target="_blank" rel="noopener noreferrer">
+                                            Purchase This Tarot Deck
+                                        </a>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
-                        <Modal show={modalVisible} imageUrl={modalImage} onClose={handleCloseModal} />
-                    </div>
+                    {/* Only show the button in the Reading view */}
+                    {currentView === 'Reading' && (
+                        <div className="button-container">
+                            <button className="draw-new-cards-btn" onClick={resetCards}>
+                                Draw New Cards
+                            </button>
+                        </div>
+                    )}
+
+                    <Modal show={modalVisible} imageUrl={modalImage} onClose={handleCloseModal} />
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

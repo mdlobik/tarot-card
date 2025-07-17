@@ -510,6 +510,13 @@
     animation: animate 0.4s linear infinite;
 }
 
+.button-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Optional: adjust spacing */
+}
+
 /* Button Container */
 .button-container {
     display: flex;

@@ -1,6 +1,6 @@
 /* CSS Starfield with blinking stars */
 .stars {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -9,12 +9,12 @@
     height: 100%;
     display: block;
     background: #000;
-    z-index: -5;
+    z-index: -9999; /* Extremely low z-index to ensure it's behind everything */
     overflow: hidden;
     pointer-events: none;
 }
 
-/* Create stars using radial gradients */
+/* Create stars using radial gradients - smaller and more subtle */
 .stars:before, .stars:after {
     content: "";
     position: absolute;
@@ -26,25 +26,25 @@
     height: 100%;
     display: block;
     background-image: 
-        radial-gradient(white, rgba(255,255,255,.2) 1px, transparent 1.5px),
         radial-gradient(white, rgba(255,255,255,.15) 0.5px, transparent 1px),
-        radial-gradient(white, rgba(255,255,255,.1) 1px, transparent 1.5px),
-        radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 0.5px, transparent 1px);
-    background-size: 275px 275px, 175px 175px, 125px 125px, 75px 75px;
+        radial-gradient(white, rgba(255,255,255,.1) 0.3px, transparent 0.7px),
+        radial-gradient(white, rgba(255,255,255,.05) 0.5px, transparent 1px),
+        radial-gradient(rgba(255,255,255,.3), rgba(255,255,255,.05) 0.3px, transparent 0.7px);
+    background-size: 350px 350px, 200px 200px, 150px 150px, 100px 100px;
     background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
-    z-index: -10;
+    z-index: -9998;
 }
 
 /* Add another layer of stars with different positions */
 .stars:after {
     background-image: 
-        radial-gradient(white, rgba(255,255,255,.2) 0.5px, transparent 1px),
-        radial-gradient(white, rgba(255,255,255,.15) 0.5px, transparent 0.5px),
-        radial-gradient(white, rgba(255,255,255,.1) 0.5px, transparent 0.5px),
-        radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 1px, transparent 1px);
-    background-size: 250px 250px, 150px 150px, 100px 100px, 50px 50px;
+        radial-gradient(white, rgba(255,255,255,.15) 0.3px, transparent 0.8px),
+        radial-gradient(white, rgba(255,255,255,.1) 0.3px, transparent 0.5px),
+        radial-gradient(white, rgba(255,255,255,.05) 0.3px, transparent 0.5px),
+        radial-gradient(rgba(255,255,255,.3), rgba(255,255,255,.05) 0.5px, transparent 0.8px);
+    background-size: 300px 300px, 180px 180px, 120px 120px, 80px 80px;
     background-position: 50px 50px, 20px 30px, 80px 160px, 30px 40px;
-    z-index: -11;
+    z-index: -9997;
 }
 
 /* Twinkling effect for subtle blinking */
@@ -57,12 +57,11 @@
     width: 100%;
     height: 100%;
     display: block;
-    z-index: -20;
-    animation: twinkle 4s ease-in-out infinite;
+    z-index: -9996;
     pointer-events: none;
 }
 
-/* Create additional blinking stars */
+/* Create additional blinking stars - more random and subtle */
 .twinkling:before, .twinkling:after {
     content: "";
     position: absolute;
@@ -74,48 +73,62 @@
     height: 100%;
     display: block;
     background-image: 
-        radial-gradient(white, rgba(255,255,255,.3) 0.5px, transparent 1px),
-        radial-gradient(white, rgba(255,255,255,.2) 0.5px, transparent 0.5px);
-    background-size: 200px 200px, 100px 100px;
+        radial-gradient(white, rgba(255,255,255,.2) 0.3px, transparent 0.8px),
+        radial-gradient(white, rgba(255,255,255,.15) 0.2px, transparent 0.4px);
+    background-size: 280px 280px, 150px 150px;
     background-position: 25px 25px, 10px 15px;
-    z-index: -21;
-    animation: twinkle 1.5s ease-in-out infinite alternate;
+    z-index: -9995;
+    animation: twinkle-1 7s ease-in-out infinite;
     pointer-events: none;
 }
 
 .twinkling:after {
     background-image: 
-        radial-gradient(white, rgba(255,255,255,.3) 0.5px, transparent 1px),
-        radial-gradient(white, rgba(255,255,255,.2) 0.5px, transparent 0.5px);
-    background-size: 150px 150px, 125px 125px;
+        radial-gradient(white, rgba(255,255,255,.2) 0.3px, transparent 0.7px),
+        radial-gradient(white, rgba(255,255,255,.15) 0.2px, transparent 0.4px);
+    background-size: 220px 220px, 170px 170px;
     background-position: 45px 45px, 60px 85px;
-    animation: twinkle 1.2s ease-in-out infinite alternate-reverse;
-    z-index: -22;
+    animation: twinkle-2 9s ease-in-out infinite;
+    z-index: -9994;
     pointer-events: none;
 }
 
-/* Blinking animation */
-@keyframes twinkle {
-    0% { opacity: 0.5; }
-    25% { opacity: 0.7; }
-    50% { opacity: 1; }
-    75% { opacity: 0.8; }
-    100% { opacity: 0.5; }
-}
-
-/* Additional blinking stars with different timing */
+/* Create a third layer for more randomness */
 .stars:before {
-    animation: twinkle-slow 1.8s ease-in-out infinite;
+    animation: twinkle-3 11s ease-in-out infinite;
 }
 
 .stars:after {
-    animation: twinkle-slow 2s ease-in-out infinite alternate;
+    animation: twinkle-4 13s ease-in-out infinite;
 }
 
-@keyframes twinkle-slow {
-    0% { opacity: 0.6; transform: scale(0.98); }
-    25% { opacity: 0.8; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.02); }
-    75% { opacity: 0.9; transform: scale(1); }
-    100% { opacity: 0.6; transform: scale(0.98); }
+/* Blinking animations with more subtle and random variations */
+@keyframes twinkle-1 {
+    0%, 100% { opacity: 0.3; }
+    25% { opacity: 0.4; }
+    50% { opacity: 0.5; }
+    75% { opacity: 0.4; }
+}
+
+@keyframes twinkle-2 {
+    0%, 100% { opacity: 0.2; }
+    33% { opacity: 0.4; }
+    66% { opacity: 0.3; }
+}
+
+@keyframes twinkle-3 {
+    0%, 100% { opacity: 0.4; }
+    20% { opacity: 0.5; }
+    40% { opacity: 0.3; }
+    60% { opacity: 0.5; }
+    80% { opacity: 0.4; }
+}
+
+@keyframes twinkle-4 {
+    0%, 100% { opacity: 0.3; }
+    16% { opacity: 0.4; }
+    33% { opacity: 0.5; }
+    50% { opacity: 0.3; }
+    66% { opacity: 0.4; }
+    83% { opacity: 0.5; }
 }

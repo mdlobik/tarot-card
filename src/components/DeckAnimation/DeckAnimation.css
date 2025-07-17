@@ -11,12 +11,15 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
 .deck {
     position: relative;
     width: 100%;
-    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     pointer-events: none; /* Added to ensure it doesn't block clicks on the button */
 }
 
@@ -24,15 +27,16 @@
 .deck-card {
     pointer-events: auto;
     position: absolute;
-    width: 400px;  /* 2 times bigger */
-    height: 600px; /* 2 times bigger */
+    width: clamp(250px, 40vw, 400px);  /* Responsive width */
+    height: clamp(375px, 60vw, 600px); /* Maintain 3:2 aspect ratio */
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     animation-duration: 1.5s;
     animation-timing-function: ease-in-out;
     animation-fill-mode: forwards;
-    left: calc(50% - 200px);
-    top: calc(50% - 300px);
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .deck-card img {
@@ -43,19 +47,26 @@
 }
 
 @keyframes shuffleLeft {
-    0% { transform: translateX(-300px) translateY(0) rotate(0deg); }
-    25% { transform: translateX(-150px) translateY(-100px) rotate(-10deg); }
-    50% { transform: translateX(0) translateY(0) rotate(10deg); }
-    75% { transform: translateX(150px) translateY(100px) rotate(-10deg); }
-    100% { transform: translateX(0) translateY(0) rotate(0deg); }
+    0% { transform: translate(-50%, -50%) translateX(-300px) translateY(0) rotate(0deg); }
+    25% { transform: translate(-50%, -50%) translateX(-150px) translateY(-100px) rotate(-10deg); }
+    50% { transform: translate(-50%, -50%) translateX(0) translateY(0) rotate(10deg); }
+    75% { transform: translate(-50%, -50%) translateX(150px) translateY(100px) rotate(-10deg); }
+    100% { transform: translate(-50%, -50%) translateX(0) translateY(0) rotate(0deg); }
 }
 
 @keyframes shuffleRight {
-    0% { transform: translateX(300px) translateY(0) rotate(0deg); }
-    25% { transform: translateX(150px) translateY(-100px) rotate(10deg); }
-    50% { transform: translateX(0) translateY(0) rotate(-10deg); }
-    75% { transform: translateX(-150px) translateY(100px) rotate(10deg); }
-    100% { transform: translateX(0) translateY(0) rotate(0deg); }
+    0% { transform: translate(-50%, -50%) translateX(300px) translateY(0) rotate(0deg); }
+    25% { transform: translate(-50%, -50%) translateX(150px) translateY(-100px) rotate(10deg); }
+    50% { transform: translate(-50%, -50%) translateX(0) translateY(0) rotate(-10deg); }
+    75% { transform: translate(-50%, -50%) translateX(-150px) translateY(100px) rotate(10deg); }
+    100% { transform: translate(-50%, -50%) translateX(0) translateY(0) rotate(0deg); }
+}
+
+.button-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(20px, 5vh, 60px); /* Dynamic vertical space between deck and button */
 }
 
 .start-reading-btn {
@@ -73,14 +84,10 @@
     text-align: center;
     border-radius: 10px;
     cursor: pointer;
-    position: absolute;
-    bottom: 14%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin: 0 auto;
     font-family: "Amatic SC", sans-serif;
     font-size: 30px;
-    z-index: 100; /* Increased from 10 to 100 to ensure it's above all other elements */
+    position: relative;
+    padding: 12px 24px;
 }
 
 .start-reading-btn span {
@@ -112,49 +119,23 @@
     opacity: 0;
 }
 
-@keyframes move-twink-back {
-    from {background-position:0 0;}
-    to {background-position:-10000px 5000px;}
-}
-@-webkit-keyframes move-twink-back {
-    from {background-position:0 0;}
-    to {background-position:-10000px 5000px;}
-}
-@-moz-keyframes move-twink-back {
-    from {background-position:0 0;}
-    to {background-position:-10000px 5000px;}
-}
-@-ms-keyframes move-twink-back {
-    from {background-position:0 0;}
-    to {background-position:-10000px 5000px;}
+/* Media queries for fine-tuning button spacing on different screen sizes */
+@media (max-width: 768px) {
+    .button-wrapper {
+        margin-top: 40px;
+    }
+
+    .start-reading-btn {
+        height: 60px;
+        width: 180px;
+        font-size: 24px;
+    }
 }
 
-.stars, .twinkling {
-    position:absolute;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    width:100%;
-    height:100%;
-    display:block;
+@media (min-width: 1200px) {
+    .button-wrapper {
+        margin-top: 80px;
+    }
 }
 
-.stars {
-    background:#000 url(http://www.script-tutorials.com/demos/360/images/stars.png) repeat top center;
-    background-size: 50%; /* Make stars smaller */
-    z-index:-1; /* Ensure it's below all other elements */
-    pointer-events: none; /* Added to ensure it doesn't block clicks */
-}
-
-.twinkling {
-    background:transparent url(http://www.script-tutorials.com/demos/360/images/twinkling.png) repeat top center;
-    background-size: 50%; /* Make twinkling smaller */
-    z-index:-1; /* Ensure it's below all other elements but above stars */
-    -moz-animation:move-twink-back 60s linear infinite;
-    -ms-animation:move-twink-back 60s linear infinite;
-    -o-animation:move-twink-back 60s linear infinite;
-    -webkit-animation:move-twink-back 60s linear infinite;
-    animation:move-twink-back 60s linear infinite;
-    pointer-events: none; /* Added to ensure it doesn't block clicks */
-}
+/* Stars and twinkling styles and animations are now in Stars.css */
