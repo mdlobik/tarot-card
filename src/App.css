@@ -306,6 +306,11 @@
     .cards-container[data-view="Reading"] .button-container {
         grid-row: 3;
     }
+
+    /* Remove padding under cards when reading is presented */
+    .cards-container[data-view="Reading"] .card-container {
+        padding-bottom: 0;
+    }
 }
 
 .reading-container::before {
@@ -348,32 +353,18 @@
 @keyframes trippyFadeIn {
     0% { 
         opacity: 0; 
-        transform: translateY(40px) scale(0.95) rotate(-2deg); 
-        filter: blur(10px) hue-rotate(0deg) saturate(1.2);
-    }
-    30% {
-        opacity: 0.5;
-        transform: translateY(20px) scale(0.97) rotate(1deg);
-        filter: blur(5px) hue-rotate(90deg) saturate(1.5);
-    }
-    70% {
-        opacity: 0.8;
-        transform: translateY(5px) scale(0.99) rotate(-1deg);
-        filter: blur(2px) hue-rotate(180deg) saturate(1.8);
+        transform: translateY(20px);
     }
     100% { 
         opacity: 1; 
-        transform: translateY(0) scale(1) rotate(0deg); 
-        filter: blur(0) hue-rotate(270deg) saturate(1.2);
+        transform: translateY(0);
     }
 }
 
 @keyframes gradientShift {
-    0% { background-position: 0% 50%; transform: scale(1) skew(0deg); }
-    25% { background-position: 50% 100%; transform: scale(1.03) skew(1deg); }
-    50% { background-position: 100% 50%; transform: scale(1.05) skew(0deg); }
-    75% { background-position: 50% 0%; transform: scale(1.03) skew(-1deg); }
-    100% { background-position: 0% 50%; transform: scale(1) skew(0deg); }
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 @keyframes pulseGlow {
@@ -431,20 +422,20 @@
 
 /* Card image tooltip */
 .card-image-tooltip {
-    position: absolute;
+    position: fixed;
     left: 50%;
-    top: -20px;
-    transform: translateX(-50%) translateY(-100%);
-    width: 150px;
-    height: 225px; /* 3:2 aspect ratio */
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 450px; /* 3:2 aspect ratio */
     background-size: cover;
     background-position: center;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
-    z-index: 100;
+    z-index: 1000;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease;
 }
 
 .card-image-tooltip.visible {
@@ -582,13 +573,13 @@
 /* Transition styles */
 .cards.transitioning {
     opacity: 0.5;
-    transition: opacity 0.5s ease;
+    transition: opacity 1s ease;
 }
 
 .reading-container.transitioning {
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity 1s ease, transform 1s ease;
 }
 
 /* Mobile View */

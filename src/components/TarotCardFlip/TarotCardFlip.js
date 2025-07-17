@@ -79,11 +79,9 @@ const TarotCardFlip = () => {
                     highlight.addEventListener('mouseenter', (e) => {
                         const imageUrl = e.target.getAttribute('data-image');
                         if (imageUrl) {
-                            // Position the tooltip relative to the highlight
-                            const rect = e.target.getBoundingClientRect();
+                            // Set the background image of the tooltip
                             tooltip.style.backgroundImage = `url(${imageUrl})`;
-                            tooltip.style.top = `${rect.top}px`;
-                            tooltip.style.left = `${rect.left + rect.width / 2}px`;
+                            // No need to set position as it's fixed in CSS
                             tooltip.classList.add('visible');
                         }
                     });
