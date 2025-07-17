@@ -142,6 +142,105 @@ The reading should be personal, insightful, and around 300-400 words total.
     }
 }
 
+// Function to generate a combined LLM reading that takes card order into account
+async function generateCombinedLLMReading(pastCard, presentCard, futureCard) {
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 1000; // 1 second delay between retries
+    
+    // Helper function to delay execution
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    
+    // Helper function for the actual API call with retry logic
+    async function callGeminiWithRetry(attempt = 1) {
+        try {
+            console.log(`Starting generateCombinedLLMReading function (attempt ${attempt} of ${MAX_RETRIES})`);
+            
+            if (!genAI) {
+                console.error('Gemini API not initialized, genAI is null or undefined');
+                throw new Error('Gemini API not initialized');
+            }
+            
+            console.log('Creating model instance with gemini-1.5-pro');
+            
+            // Create a model instance
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+            console.log('Model instance created successfully:', !!model);
+
+            // Format the cards for the prompt
+            const cardsInfo = `
+Past Card: ${pastCard.name} - ${pastCard.description}
+Present Card: ${presentCard.name} - ${presentCard.description}
+Future Card: ${futureCard.name} - ${futureCard.description}
+            `.trim();
+            
+            console.log('Cards info formatted for prompt');
+
+            // Create the prompt for Gemini
+            const prompt = `
+You are an expert tarot reader with deep knowledge of tarot symbolism and interpretation. 
+I need you to create a holistic, integrated tarot reading that combines all three cards (Past, Present, Future) into a single cohesive narrative.
+
+Here are the three cards that were drawn in order:
+
+${cardsInfo}
+
+Important: The order of the cards is significant. The first card represents the past, the second represents the present, and the third represents the future.
+
+Create a single, flowing narrative that:
+1. Weaves together all three cards into one cohesive story
+2. Shows how each position (past, present, future) influences the others
+3. Highlights the journey or progression from past through present to future
+4. Identifies any significant patterns, themes, or connections between the cards
+5. Provides meaningful insights based on the specific combination and order of these cards
+
+Your response should be a single, integrated paragraph of about 150-200 words that tells the complete story of this reading.
+            `.trim();
+            
+            console.log('Combined reading prompt created, length:', prompt.length);
+            console.log(`Calling Gemini API to generate combined content (attempt ${attempt})...`);
+
+            // Generate content
+            const result = await model.generateContent(prompt);
+            console.log('Combined content generated successfully, getting response');
+            
+            const response = await result.response;
+            console.log('Combined response received, extracting text');
+            
+            const text = response.text();
+            console.log('Combined text extracted, length:', text.length);
+            
+            return text;
+            
+        } catch (error) {
+            console.error(`Error during API call to Gemini for combined reading (attempt ${attempt}):`, error);
+            console.error('Error name:', error.name);
+            console.error('Error message:', error.message);
+            
+            // If we haven't reached max retries, try again after a delay
+            if (attempt < MAX_RETRIES) {
+                console.log(`Retrying in ${RETRY_DELAY}ms... (${attempt} of ${MAX_RETRIES} attempts)`);
+                await delay(RETRY_DELAY);
+                return callGeminiWithRetry(attempt + 1);
+            }
+            
+            // If we've reached max retries, throw the error
+            console.error(`Max retries (${MAX_RETRIES}) reached. Giving up.`);
+            throw error;
+        }
+    }
+    
+    // Start the retry process
+    try {
+        return await callGeminiWithRetry();
+    } catch (error) {
+        console.error('All attempts to generate combined LLM reading failed:', error);
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        throw error;
+    }
+}
+
 // Function to generate tarot readings locally
 function generateTarotReading(pastCard, presentCard, futureCard) {
     // Template readings based on card positions
@@ -707,6 +806,7 @@ app.post('/api/tarot', async (req, res) => {
         });
 
         let reading;
+        let combinedReading = null;
         let usedGemini = false;
 
         // Log the current state of the Gemini API variables
@@ -724,6 +824,17 @@ app.post('/api/tarot', async (req, res) => {
                 usedGemini = true;
                 console.log('Successfully generated reading with Gemini API');
                 console.log('Reading length:', reading.length);
+                
+                // Generate the combined LLM reading
+                try {
+                    console.log('Attempting to generate combined LLM reading...');
+                    combinedReading = await generateCombinedLLMReading(pastCard, presentCard, futureCard);
+                    console.log('Successfully generated combined LLM reading');
+                    console.log('Combined reading length:', combinedReading.length);
+                } catch (combinedError) {
+                    console.error('Error generating combined LLM reading:', combinedError);
+                    console.log('Proceeding without combined reading');
+                }
             } catch (geminiError) {
                 console.error('Error with Gemini API, falling back to local generation:', geminiError);
                 // Fall back to local generation
@@ -741,10 +852,12 @@ app.post('/api/tarot', async (req, res) => {
         // Prepare the response
         const response = {
             reading: reading,
+            combinedReading: combinedReading,
             source: usedGemini ? 'gemini' : 'local'
         };
         
         console.log('Sending response with source:', response.source);
+        console.log('Combined reading included:', !!combinedReading);
         
         // Send the generated reading
         res.status(200).json(response);

@@ -36,6 +36,7 @@ const TarotCardFlip = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalImage, setModalImage] = useState(null);
     const [aiReading, setAiReading] = useState('');
+    const [combinedReading, setCombinedReading] = useState(''); // New state for combined LLM reading
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [hasGeneratedReading, setHasGeneratedReading] = useState(false);
@@ -231,6 +232,16 @@ const TarotCardFlip = () => {
 
                     if (response.data?.reading) {
                         setAiReading(response.data.reading);
+                        
+                        // Check if there's a combined reading from the LLM
+                        if (response.data?.combinedReading) {
+                            setCombinedReading(response.data.combinedReading);
+                            console.log('Combined LLM reading received');
+                        } else {
+                            console.log('No combined LLM reading in response');
+                            setCombinedReading('');
+                        }
+                        
                         setHasGeneratedReading(true);
                     } else {
                         // Fallback in case the response doesn't have a reading
@@ -242,6 +253,7 @@ const TarotCardFlip = () => {
                             `Trust in your intuition as you navigate the path ahead.`;
 
                         setAiReading(fallbackReading);
+                        setCombinedReading(''); // Reset combined reading
                         setHasGeneratedReading(true);
                     }
                 } catch (error) {
@@ -255,6 +267,7 @@ const TarotCardFlip = () => {
                         `Together, these three specific cards form a narrative of growth and self-discovery unique to your reading.`;
 
                     setAiReading(fallbackReading);
+                    setCombinedReading(''); // Reset combined reading on error
                     setHasGeneratedReading(true);
 
                     // Still set an error message so the user knows something went wrong
@@ -283,6 +296,7 @@ const TarotCardFlip = () => {
 
     const resetCards = useCallback(() => {
         setAiReading('');
+        setCombinedReading(''); // Reset the combined reading
         setError(null);
         setIsLoading(false);
         setHasGeneratedReading(false);
@@ -391,6 +405,15 @@ const TarotCardFlip = () => {
                                 <div className="ai-reading">
                                     <h3>Your Mystical Reading</h3>
                                     <p dangerouslySetInnerHTML={{ __html: highlightCardNames(aiReading, cards) }}></p>
+                                    
+                                    {/* Display the combined LLM reading if available */}
+                                    {combinedReading && (
+                                        <div className="combined-reading">
+                                            <h4>Integrated Card Reading</h4>
+                                            <p className="combined-reading-text">{combinedReading}</p>
+                                        </div>
+                                    )}
+                                    
                                     <div className="purchase-link">
                                         <a href="https://www.amazon.com/Family-Tarot-Deck-Collaborative-Different/dp/B085BK9Z77/ref=sr_1_3?crid=AS2OT7OFW0B8&dib=eyJ2IjoiMSJ9.ueyEnZ7Am2y_KJ89XSP3kSJByiQlXR2ofi60RdshhISSxRIAxmc4XCK68Ccg8zuDBnrZYbzoT-5tZycQB89IM38szJmkmHYa6YEZ459AQwdDITHcZDGV-l7MYHnbYyyzzxVgzTPDPfB5UeHL6SG6TNXCfARvBP6uhqvFWzGHA8vrR70N390-3lPOnQmjxKDQvLuA85D_zguOPB0Fk71Z2moMf1tm1Vdsk82Oz8EfmVo.wgITTMg9FkWOD9IKTtdR3sss1CGlONlFWxDZSp5Pilg&dib_tag=se&keywords=tarot+deck+people+for+peace&qid=1752701157&sprefix=tarot+deck+people+for+peac%2Caps%2C133&sr=8-3" target="_blank" rel="noopener noreferrer">
                                             Purchase The Tarot Deck
