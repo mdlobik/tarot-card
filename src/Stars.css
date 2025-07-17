@@ -14,8 +14,8 @@
     pointer-events: none;
 }
 
-/* Create stars using radial gradients - smaller and more subtle */
-.stars:before, .stars:after {
+/* Create stars using radial gradients - brighter and more visible */
+.stars .small-stars-1 {
     content: "";
     position: absolute;
     top: 0;
@@ -26,25 +26,36 @@
     height: 100%;
     display: block;
     background-image: 
-        radial-gradient(white, rgba(255,255,255,.15) 0.5px, transparent 1px),
-        radial-gradient(white, rgba(255,255,255,.1) 0.3px, transparent 0.7px),
-        radial-gradient(white, rgba(255,255,255,.05) 0.5px, transparent 1px),
-        radial-gradient(rgba(255,255,255,.3), rgba(255,255,255,.05) 0.3px, transparent 0.7px);
+        radial-gradient(white, rgba(255,255,255,.5) 0.7px, transparent 1.5px),
+        radial-gradient(white, rgba(255,255,255,.4) 0.5px, transparent 1px),
+        radial-gradient(white, rgba(255,255,255,.3) 0.7px, transparent 1.5px),
+        radial-gradient(rgba(255,255,255,.7), rgba(255,255,255,.3) 0.5px, transparent 1px);
     background-size: 350px 350px, 200px 200px, 150px 150px, 100px 100px;
     background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
     z-index: -9998;
+    animation: twinkle-3 7s ease-in-out infinite;
 }
 
 /* Add another layer of stars with different positions */
-.stars:after {
+.stars .small-stars-2 {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
     background-image: 
-        radial-gradient(white, rgba(255,255,255,.15) 0.3px, transparent 0.8px),
-        radial-gradient(white, rgba(255,255,255,.1) 0.3px, transparent 0.5px),
-        radial-gradient(white, rgba(255,255,255,.05) 0.3px, transparent 0.5px),
-        radial-gradient(rgba(255,255,255,.3), rgba(255,255,255,.05) 0.5px, transparent 0.8px);
+        radial-gradient(white, rgba(255,255,255,.5) 0.5px, transparent 1.2px),
+        radial-gradient(white, rgba(255,255,255,.4) 0.4px, transparent 0.8px),
+        radial-gradient(white, rgba(255,255,255,.3) 0.4px, transparent 0.8px),
+        radial-gradient(rgba(255,255,255,.7), rgba(255,255,255,.3) 0.6px, transparent 1.2px);
     background-size: 300px 300px, 180px 180px, 120px 120px, 80px 80px;
     background-position: 50px 50px, 20px 30px, 80px 160px, 30px 40px;
     z-index: -9997;
+    animation: twinkle-4 8s ease-in-out infinite;
 }
 
 /* Twinkling effect for subtle blinking */
@@ -61,7 +72,34 @@
     pointer-events: none;
 }
 
-/* Create additional blinking stars - more random and subtle */
+/* Add a few larger, brighter stars */
+.stars::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-image: 
+        radial-gradient(white, rgba(255,255,255,.9) 1px, transparent 3px),
+        radial-gradient(white, rgba(255,255,255,.8) 1.2px, transparent 2.5px),
+        radial-gradient(white, rgba(255,255,255,.7) 1px, transparent 2px);
+    background-size: 800px 800px, 600px 600px, 700px 700px;
+    background-position: 120px 90px, 350px 320px, 570px 210px;
+    z-index: -9995;
+    animation: bright-twinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes bright-twinkle {
+    0% { opacity: 0.7; filter: brightness(0.9) blur(0px); }
+    50% { opacity: 1; filter: brightness(1.2) blur(0.3px); }
+    100% { opacity: 0.9; filter: brightness(1.5) blur(0px); }
+}
+
+/* Create additional blinking stars - brighter and more dynamic */
 .twinkling:before, .twinkling:after {
     content: "";
     position: absolute;
@@ -73,62 +111,54 @@
     height: 100%;
     display: block;
     background-image: 
-        radial-gradient(white, rgba(255,255,255,.2) 0.3px, transparent 0.8px),
-        radial-gradient(white, rgba(255,255,255,.15) 0.2px, transparent 0.4px);
+        radial-gradient(white, rgba(255,255,255,.6) 0.5px, transparent 1.2px),
+        radial-gradient(white, rgba(255,255,255,.5) 0.4px, transparent 0.8px);
     background-size: 280px 280px, 150px 150px;
     background-position: 25px 25px, 10px 15px;
     z-index: -9995;
-    animation: twinkle-1 7s ease-in-out infinite;
+    animation: twinkle-1 5s ease-in-out infinite;
     pointer-events: none;
 }
 
 .twinkling:after {
     background-image: 
-        radial-gradient(white, rgba(255,255,255,.2) 0.3px, transparent 0.7px),
-        radial-gradient(white, rgba(255,255,255,.15) 0.2px, transparent 0.4px);
+        radial-gradient(white, rgba(255,255,255,.6) 0.5px, transparent 1px),
+        radial-gradient(white, rgba(255,255,255,.5) 0.4px, transparent 0.8px);
     background-size: 220px 220px, 170px 170px;
     background-position: 45px 45px, 60px 85px;
-    animation: twinkle-2 9s ease-in-out infinite;
+    animation: twinkle-2 6s ease-in-out infinite;
     z-index: -9994;
     pointer-events: none;
 }
 
-/* Create a third layer for more randomness */
-.stars:before {
-    animation: twinkle-3 11s ease-in-out infinite;
-}
 
-.stars:after {
-    animation: twinkle-4 13s ease-in-out infinite;
-}
-
-/* Blinking animations with more subtle and random variations */
+/* Blinking animations with more dynamic and bright variations */
 @keyframes twinkle-1 {
-    0%, 100% { opacity: 0.3; }
-    25% { opacity: 0.4; }
-    50% { opacity: 0.5; }
-    75% { opacity: 0.4; }
+    0%, 100% { opacity: 0.5; transform: scale(0.98); }
+    25% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.02); }
+    75% { opacity: 0.8; transform: scale(1); }
 }
 
 @keyframes twinkle-2 {
-    0%, 100% { opacity: 0.2; }
-    33% { opacity: 0.4; }
-    66% { opacity: 0.3; }
+    0%, 100% { opacity: 0.4; filter: brightness(0.9); }
+    33% { opacity: 0.7; filter: brightness(1.1); }
+    66% { opacity: 0.9; filter: brightness(1.3); }
 }
 
 @keyframes twinkle-3 {
-    0%, 100% { opacity: 0.4; }
-    20% { opacity: 0.5; }
-    40% { opacity: 0.3; }
-    60% { opacity: 0.5; }
-    80% { opacity: 0.4; }
+    0%, 100% { opacity: 0.6; transform: scale(0.97); filter: brightness(0.9); }
+    20% { opacity: 0.8; transform: scale(0.99); filter: brightness(1); }
+    40% { opacity: 0.7; transform: scale(1.01); filter: brightness(1.1); }
+    60% { opacity: 0.9; transform: scale(1.03); filter: brightness(1.2); }
+    80% { opacity: 0.7; transform: scale(1); filter: brightness(1); }
 }
 
 @keyframes twinkle-4 {
-    0%, 100% { opacity: 0.3; }
-    16% { opacity: 0.4; }
-    33% { opacity: 0.5; }
-    50% { opacity: 0.3; }
-    66% { opacity: 0.4; }
-    83% { opacity: 0.5; }
+    0%, 100% { opacity: 0.5; filter: brightness(0.9); }
+    16% { opacity: 0.7; filter: brightness(1); }
+    33% { opacity: 0.9; filter: brightness(1.1); }
+    50% { opacity: 0.6; filter: brightness(1.2); }
+    66% { opacity: 0.8; filter: brightness(1.1); }
+    83% { opacity: 1; filter: brightness(1.3); }
 }

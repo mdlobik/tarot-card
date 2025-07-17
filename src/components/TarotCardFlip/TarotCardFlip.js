@@ -327,6 +327,8 @@ const TarotCardFlip = () => {
     return (
         <>
             <div className="stars">
+                <div className="small-stars-1"></div>
+                <div className="small-stars-2"></div>
                 <div className="twinkling"></div>
             </div>
             <div className="tarot-reading-container">

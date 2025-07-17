@@ -30,6 +30,8 @@ const DeckAnimation = ({ onAnimationComplete }) => {
     return (
         <>
             <div className="stars">
+                <div className="small-stars-1"></div>
+                <div className="small-stars-2"></div>
                 <div className="twinkling"></div>
             </div>
             <div className={`deck-animation-container ${fadeOut ? 'fade-out' : ''}`}>
