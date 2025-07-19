@@ -38,8 +38,7 @@ const DeckAnimation = ({ onAnimationComplete }) => {
                 <div className="deck">
                     {cards.map((card, index) => (
                         <div
-                            key={card}
-                            className={`deck-card ${imageLoaded ? 'loaded' : ''}`}
+                            key={card}                            className={`deck-card ${imageLoaded ? 'loaded' : ''}`}
                             style={{
                                 zIndex: cards.length - index,
                                 animationName: index % 2 === 0 ? 'shuffleLeft' : 'shuffleRight',
@@ -53,17 +52,18 @@ const DeckAnimation = ({ onAnimationComplete }) => {
                             />
                         </div>
                     ))}
-
-                    {showButton && imageLoaded && (
+                </div>
+                {showButton && imageLoaded && (
+                    <div className="button-wrapper">
                         <button
                             className="start-reading-btn"
                             onClick={handleStartReading}
                             aria-label="Start Tarot Reading"
                         >
-                            Start Reading
+                            <span>Start Reading</span>
                         </button>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </>
     );

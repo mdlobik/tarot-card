@@ -398,7 +398,7 @@ const TarotCardFlip = () => {
                                                     handleNextClick();
                                                 }}
                                             >
-                                                {nextCardIndex >= 2 ? "See Reading" : "Next Card"}
+                                                {nextCardIndex >= 2 ? "???????" : "Next Card"}
                                             </button>
                                         )}
                                     </div>
