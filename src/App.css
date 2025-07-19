@@ -359,6 +359,10 @@ html, body, #root, .App, .tarot-reading-container {
         grid-row: 1;
         justify-content: flex-start;
     }
+    
+    .cards-container[data-view="Ready"] .cards {
+        justify-content: center;
+    }
 
     .cards-container[data-view="Reading"] .reading-container {
         grid-row: 2;
@@ -550,13 +554,7 @@ html, body, #root, .App, .tarot-reading-container {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-        45deg,
-        rgba(0, 50, 200, 0.2),
-        rgba(0, 100, 255, 0.2),
-        rgba(50, 150, 255, 0.2),
-        rgba(100, 200, 255, 0.2)
-    );
+    background: linear-gradient(135deg, rgba(0, 50, 200, 0.7), rgba(0, 94, 255, 0.7), rgba(50, 184, 255, 0.7), rgba(100, 240, 255, 0.7));
     z-index: -1;
     animation: blueGradientShift 6s ease infinite;
     border-radius: 8px;

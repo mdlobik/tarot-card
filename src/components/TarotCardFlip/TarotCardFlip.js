@@ -363,7 +363,12 @@ const TarotCardFlip = () => {
                 <div className="twinkling"></div>
             </div>
             <div className="tarot-reading-container">
-                <div className={`cards-container ${showCards ? 'show-cards' : ''}`} data-view={currentView}>
+                <div className={`cards-container ${showCards ? 'show-cards' : ''}`} data-view={
+                    // Set data-view to "Ready" when the "Your Cards Are Ready" screen appears
+                    (!isDesktop && currentView === 'Reading' && cards.every(card => card.flipped) && !hasGeneratedReading && !isLoading) 
+                    ? 'Ready' 
+                    : currentView
+                }>
                     {/* Show cards section unless we're in the Reading view on mobile/tablet */}
                     {(isDesktop || currentView !== 'Reading') && (
                         <div className={`cards ${isDesktop ? 'desktop-view' : 'mobile-view'} ${isTransitioning ? 'transitioning' : ''}`}>
