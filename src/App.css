@@ -360,6 +360,7 @@ html, body, #root, .App, .tarot-reading-container {
 
     .cards-container[data-view="Reading"] .cards {
         grid-row: 1;
+        justify-content: flex-start;
     }
 
     .cards-container[data-view="Reading"] .reading-container {
