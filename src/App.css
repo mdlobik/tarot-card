@@ -3,8 +3,6 @@ html, body, #root, .App, .tarot-reading-container {
     height: 100%;
 }
 
-.tarot-reading-container {}
-/* Cards Container */
 .cards-container {
     display: flex;
     flex-direction: column;
@@ -17,12 +15,6 @@ html, body, #root, .App, .tarot-reading-container {
     position: relative;
     z-index: 2;
     padding: 20px;
-    height: 100%;
-}
-
-.cards-container.show-cards {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 .cards {
@@ -128,14 +120,15 @@ html, body, #root, .App, .tarot-reading-container {
 }
 
 .cards-container.show-cards[data-view="Reading"] {
-    height: auto !important;
-    position: absolute;
-    top: 65%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
     width: 90%;
+    max-width: 100vw;
+    max-height: 100vh;
+    overflow-y: auto;
 }
-
 
 @media (min-width: 600px) {
     .card-container {

@@ -67,7 +67,7 @@
     opacity: 0; /* Start invisible for fade-in effect */
     animation: fadeIn 1s ease-in-out forwards; /* Add fade-in animation */
     position: relative;
-    top: -200px;
+    top: -100px;
 }
 
 @keyframes fadeIn {
