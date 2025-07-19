@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const { Groq } = require('groq');
+const { GroqClient } = require('groq-sdk');
 
 // Load environment variables
 const path = require('path');
@@ -27,9 +27,9 @@ let groqClient;
 // Initialize Groq
 try {
     if (groqApiKey) {
-        console.log('Attempting to initialize Groq API with key');
-        groqClient = new Groq({ apiKey: groqApiKey });
-        console.log('Groq API initialized successfully:', !!groqClient);
+        console.log('Initializing Groq API');
+        groqClient = new GroqClient({ apiKey: groqApiKey });
+        console.log('Groq API initialized successfully');
     } else {
         console.warn('Groq API key not found. Falling back to local generation.');
     }
@@ -48,14 +48,11 @@ async function generateTarotReadingWithGroq(pastCard, presentCard, futureCard) {
     // Helper function for the actual API call with retry logic
     async function callGroqWithRetry(attempt = 1) {
         try {
-            console.log(`Starting generateTarotReadingWithGroq function (attempt ${attempt} of ${MAX_RETRIES})`);
+            console.log(`Generating tarot reading with Groq (attempt ${attempt}/${MAX_RETRIES})`);
             
             if (!groqClient) {
-                console.error('Groq API not initialized, groqClient is null or undefined');
                 throw new Error('Groq API not initialized');
             }
-            
-            console.log('Creating chat completion with Groq using LLaMA-3-70b-flash');
             
             // Format the cards for the prompt
             const cardsInfo = `
@@ -63,8 +60,6 @@ Past Card: ${pastCard.name} - ${pastCard.description}
 Present Card: ${presentCard.name} - ${presentCard.description}
 Future Card: ${futureCard.name} - ${futureCard.description}
             `.trim();
-            
-            console.log('Cards info formatted for prompt');
 
             // Create the prompt for Groq
             const prompt = `
@@ -89,9 +84,6 @@ Format the reading as follows:
 
 The reading should be personal, insightful, and around 300-400 words total.
             `.trim();
-            
-            console.log('Prompt created for Groq, length:', prompt.length);
-            console.log(`Calling Groq API to generate content (attempt ${attempt})...`);
 
             // Generate content using Groq
             const completion = await groqClient.chat.completions.create({
@@ -99,35 +91,29 @@ The reading should be personal, insightful, and around 300-400 words total.
                     { role: "system", content: "You are an expert tarot reader with deep knowledge of tarot symbolism and interpretation." },
                     { role: "user", content: prompt }
                 ],
-                model: "llama3-70b-8192",  // Using LLaMA-3-70b model
+                model: "llama3-70b-8192",
                 temperature: 0.7,
                 max_tokens: 1024,
             });
             
-            console.log('Content generated successfully with Groq');
-            
             if (completion.choices && completion.choices.length > 0) {
-                const text = completion.choices[0].message.content;
-                console.log('Text extracted from Groq response, length:', text.length);
-                return text;
+                return completion.choices[0].message.content;
             } else {
                 throw new Error('No content in Groq response');
             }
             
         } catch (error) {
-            console.error(`Error during API call to Groq (attempt ${attempt}):`, error);
-            console.error('Error name:', error.name);
-            console.error('Error message:', error.message);
+            console.error(`Error during Groq API call (attempt ${attempt}):`, error.message);
             
             // If we haven't reached max retries, try again after a delay
             if (attempt < MAX_RETRIES) {
-                console.log(`Retrying in ${RETRY_DELAY}ms... (${attempt} of ${MAX_RETRIES} attempts)`);
+                console.log(`Retrying in ${RETRY_DELAY}ms...`);
                 await delay(RETRY_DELAY);
                 return callGroqWithRetry(attempt + 1);
             }
             
             // If we've reached max retries, throw the error
-            console.error(`Max retries (${MAX_RETRIES}) reached. Giving up on Groq.`);
+            console.error(`Max retries reached. Giving up on Groq.`);
             throw error;
         }
     }
@@ -136,10 +122,7 @@ The reading should be personal, insightful, and around 300-400 words total.
     try {
         return await callGroqWithRetry();
     } catch (error) {
-        console.error('All attempts to generate reading with Groq failed:', error);
-        console.error('Error name:', error.name);
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
+        console.error('All attempts to generate reading with Groq failed:', error.message);
         throw error;
     }
 }
@@ -197,28 +180,21 @@ app.get('/api/test', (req, res) => {
 
 // Groq API test endpoint
 app.get('/api/test-groq', async (req, res) => {
-    console.log('Received request to /api/test-groq endpoint');
+    console.log('Testing Groq API');
     try {
         // Check if Groq API is initialized
         if (!groqClient) {
-            console.log('Groq API not initialized for test');
             return res.status(500).json({
                 success: false,
                 message: 'Groq API not initialized',
                 details: {
-                    apiKeyExists: !!groqApiKey,
-                    apiKeyLength: groqApiKey ? groqApiKey.length : 0,
-                    apiKeyPrefix: groqApiKey ? groqApiKey.substring(0, 5) + '...' : 'undefined'
+                    apiKeyExists: !!groqApiKey
                 }
             });
         }
-
-        console.log('Groq API initialized, testing with a simple prompt');
         
         // Simple test prompt
         const prompt = "Write a one-sentence test response to verify the API is working.";
-        
-        console.log('Sending test prompt to Groq API');
         
         // Generate content using Groq
         const completion = await groqClient.chat.completions.create({
@@ -231,11 +207,8 @@ app.get('/api/test-groq', async (req, res) => {
             max_tokens: 100,
         });
         
-        console.log('Received response from Groq API');
-        
         if (completion.choices && completion.choices.length > 0) {
             const text = completion.choices[0].message.content;
-            console.log('Response text:', text);
             
             // Return success response
             return res.status(200).json({
@@ -247,35 +220,23 @@ app.get('/api/test-groq', async (req, res) => {
             throw new Error('No content in Groq response');
         }
     } catch (error) {
-        console.error('Error testing Groq API:', error);
+        console.error('Error testing Groq API:', error.message);
         
-        // Return detailed error information
+        // Return error information
         return res.status(500).json({
             success: false,
             message: 'Error testing Groq API',
-            error: {
-                name: error.name,
-                message: error.message,
-                details: error.toString()
-            },
-            apiDetails: {
-                apiKeyExists: !!groqApiKey,
-                apiKeyLength: groqApiKey ? groqApiKey.length : 0,
-                apiKeyPrefix: groqApiKey ? groqApiKey.substring(0, 5) + '...' : 'undefined'
-            }
+            error: error.message
         });
     }
 });
 
 // Main tarot reading endpoint
 app.post('/api/tarot', async (req, res) => {
-    console.log('Received request to /api/tarot endpoint');
     try {
         const { cards } = req.body;
-        console.log('Request body contains cards:', !!cards);
 
         if (!cards || !Array.isArray(cards) || cards.length !== 3) {
-            console.log('Invalid request: cards not provided or not an array of 3 items');
             return res.status(400).json({
                 error: 'Invalid request. Please provide exactly 3 cards with position, name, and description.'
             });
@@ -286,74 +247,44 @@ app.post('/api/tarot', async (req, res) => {
         const presentCard = cards.find(card => card.position === 'Present');
         const futureCard = cards.find(card => card.position === 'Future');
         
-        console.log('Cards extracted by position:', {
+        console.log('Processing tarot reading for cards:', {
             past: pastCard?.name,
             present: presentCard?.name,
             future: futureCard?.name
         });
 
-        let reading = null;
-        let localReading = null;
+        // First, generate the local reading to use as fallback
+        const localReading = generateTarotReading(pastCard, presentCard, futureCard);
+        let reading = localReading;
         let source = 'local';
         let isLLMGenerated = false;
-
-        // Log the current state of the API variables
-        console.log('API state check:');
-        console.log('- Groq API initialized:', !!groqClient);
-        console.log('- Groq API key exists:', !!groqApiKey);
-
-        // First, generate the local reading to use as fallback
-        localReading = generateTarotReading(pastCard, presentCard, futureCard);
-        console.log('Generated local reading for fallback');
 
         // Try Groq if available
         if (groqClient && groqApiKey) {
             try {
-                console.log('Attempting to generate reading with Groq API...');
                 reading = await generateTarotReadingWithGroq(pastCard, presentCard, futureCard);
                 source = 'groq';
                 isLLMGenerated = true;
-                console.log('Successfully generated reading with Groq API');
-                console.log('Groq reading length:', reading.length);
-            } catch (groqError) {
-                console.error('Error with Groq API:', groqError);
-                console.error('Error name:', groqError.name);
-                console.error('Error message:', groqError.message);
-                console.log('Groq API failed, falling back to local generation');
-                
-                // Fall back to local reading
+                console.log('Successfully generated reading with Groq');
+            } catch (error) {
+                console.error('Groq API failed, falling back to local generation:', error.message);
                 reading = localReading;
                 source = 'local';
                 isLLMGenerated = false;
             }
         } else {
             console.log('No Groq API available, using local generation');
-            reading = localReading;
-            source = 'local';
-            isLLMGenerated = false;
         }
 
-        // Prepare the response
-        const response = {
-            reading: reading,
-            source: source,
-            isLLMGenerated: isLLMGenerated
-        };
-        
-        console.log('Sending response with source:', response.source);
-        console.log('Is LLM generated:', response.isLLMGenerated);
-        
         // Send the generated reading
-        res.status(200).json(response);
+        res.status(200).json({
+            reading,
+            source,
+            isLLMGenerated
+        });
 
     } catch (error) {
-        console.error('Error generating tarot reading:', error);
-        console.error('Error details:', {
-            name: error.name,
-            message: error.message,
-            stack: error.stack
-        });
-        
+        console.error('Error generating tarot reading:', error.message);
         res.status(500).json({
             error: 'Failed to generate reading. The mystical forces are unclear at this moment.'
         });
