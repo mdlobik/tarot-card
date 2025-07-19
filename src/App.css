@@ -3,26 +3,21 @@ html, body, #root, .App, .tarot-reading-container {
     height: 100%;
 }
 
-.tarot-reading-container {
-    position: relative;
-    height: 100vh;
-}
+.tarot-reading-container {}
 /* Cards Container */
 .cards-container {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    justify-content: center; /* Vertical centering */
     gap: 20px;
     opacity: 0;
-    padding: 20px;
-    position: absolute; /* Change from relative to absolute */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Center both vertically and horizontally */
+    transform: translateY(50px);
     transition: opacity 0.5s, transform 0.5s;
+    position: relative;
     z-index: 2;
-    height: auto; /* Let content define height */
+    padding: 20px;
+    height: 100%;
 }
 
 .cards-container.show-cards {
@@ -131,6 +126,11 @@ html, body, #root, .App, .tarot-reading-container {
     font-weight: bold;
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
 }
+
+.cards-container.show-cards[data-view="Reading"] {
+    height: auto !important;
+}
+
 
 @media (min-width: 600px) {
     .card-container {
