@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9831743e-5ea7-4d07-afa1-b6f470c364c6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/App.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/DeckAnimation/DeckAnimation.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DeckAnimation/DeckAnimation.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/DeckAnimation/DeckAnimation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DeckAnimation/DeckAnimation.js" afterDir="false" />
-    </list>
+    <list default="true" id="9831743e-5ea7-4d07-afa1-b6f470c364c6" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -142,7 +138,7 @@
       <workItem from="1752736800934" duration="8349000" />
       <workItem from="1752867495175" duration="1250000" />
       <workItem from="1752890584653" duration="5741000" />
-      <workItem from="1752900214401" duration="1667000" />
+      <workItem from="1752900214401" duration="2066000" />
     </task>
     <servers />
   </component>
