@@ -437,7 +437,8 @@ html, body, #root, .App, .tarot-reading-container {
 }
 
 .ai-reading {
-    margin: 15px 0;
+    margin-top: 15px;
+    margin-bottom: 0;
 }
 
 .ai-reading h3 {
@@ -461,13 +462,6 @@ html, body, #root, .App, .tarot-reading-container {
     position: relative;
     cursor: pointer;
     transition: all 0.3s ease;
-}
-
-.ai-reading .card-highlight:hover {
-    color: #ffff00;
-    text-shadow: 0 0 12px rgba(255, 255, 0, 1), 0 0 20px rgba(255, 215, 0, 0.6);
-    letter-spacing: 1px;
-    transform: translateY(-2px) scale(1.1);
 }
 
 /* Card image tooltip */
@@ -522,7 +516,7 @@ html, body, #root, .App, .tarot-reading-container {
 
 .purchase-link {
     display: block;
-    margin: 20px auto;
+    margin: 40px auto 20px auto;
     text-align: center;
 }
 
