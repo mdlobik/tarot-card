@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const { GroqClient } = require('groq-sdk');
+const Groq = require('groq-sdk');
 
 // Load environment variables
 const path = require('path');
@@ -28,7 +28,7 @@ let groqClient;
 try {
     if (groqApiKey) {
         console.log('Initializing Groq API');
-        groqClient = new GroqClient({ apiKey: groqApiKey });
+        groqClient = new Groq({ apiKey: groqApiKey });
         console.log('Groq API initialized successfully');
     } else {
         console.warn('Groq API key not found. Falling back to local generation.');

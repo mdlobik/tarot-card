@@ -7,7 +7,9 @@ This document outlines the changes made to simplify the API integration by using
 ## Changes in `server.js`
 
 1. Fixed the Groq client initialization:
-   - Properly initialized the GroqClient from the groq-sdk package
+   - Properly initialized the Groq client using the correct import and constructor pattern
+   - Updated from `const { GroqClient } = require('groq-sdk')` to `const Groq = require('groq-sdk')`
+   - Updated from `new GroqClient({ apiKey: groqApiKey })` to `new Groq({ apiKey: groqApiKey })`
    - Simplified error handling and logging
 
 2. Streamlined the `generateTarotReadingWithGroq` function:
