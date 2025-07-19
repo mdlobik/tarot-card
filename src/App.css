@@ -479,7 +479,6 @@
     color: #ffd700;
     text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
     transform: translateY(0);
-    animation: card-pulse 2s infinite;
     padding: 0 3px;
     position: relative;
     cursor: pointer;
@@ -648,7 +647,6 @@
 
 .purchase-link a {
     display: inline-block;
-    height: 70px;
     width: 220px;
     background: transparent;
     text-align: center;
@@ -816,10 +814,6 @@
 
 /* Mobile View */
 @media (max-width: 600px) {
-    .start-reading-btn,
-    .draw-new-cards-btn {
-        height: 60px;
-    }
 
     .start-reading-btn span,
     .draw-new-cards-btn span {
@@ -833,7 +827,7 @@
 
     .card-container {
         margin-bottom: 30px;
-        max-width: 80%; /* Make cards take up 80% of screen width on mobile */
+        max-width: 80%;
     }
 
     .reading-container {
