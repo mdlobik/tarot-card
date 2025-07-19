@@ -64,25 +64,22 @@ Future Card: ${futureCard.name} - ${futureCard.description}
             // Create the prompt for Groq
             const prompt = `
 You are an expert tarot reader with deep knowledge of tarot symbolism and interpretation. 
-Please provide a detailed and personalized tarot reading based on the following three-card spread (Past, Present, Future):
+Please provide a concise and personalized tarot reading based on the following three-card spread (Past, Present, Future):
 
 ${cardsInfo}
 
 Your reading should include:
-1. An interpretation of each card in its position (Past, Present, Future)
+1. A brief interpretation of each card in its position (Past, Present, Future)
 2. How the cards connect and influence each other
-3. Patterns or themes across the spread (such as suits, elements, or archetypes)
-4. Specific insights for any notable card combinations
-5. Practical advice based on the overall reading
+3. Practical advice based on the overall reading
 
 Format the reading as follows:
-- Start with the Past card interpretation
-- Then the Present card interpretation
-- Then the Future card interpretation
-- Follow with connections between the cards
-- End with advice based on the spread
+- Start with the Past card interpretation (keep it brief)
+- Then the Present card interpretation (keep it brief)
+- Then the Future card interpretation (keep it brief)
+- End with a short conclusion connecting the cards and offering advice
 
-The reading should be personal, insightful, and around 300-400 words total.
+Be direct and to the point. The reading should be personal, insightful, and around 150-200 words total. Focus on clarity and impact rather than length.
             `.trim();
 
             // Generate content using Groq

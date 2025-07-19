@@ -49,6 +49,7 @@ const TarotCardFlip = () => {
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
     const [showNextButton, setShowNextButton] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
+    const [shouldGenerateReading, setShouldGenerateReading] = useState(false); // Flag to track if we should generate reading on mobile
 
     // Add resize listener to detect desktop vs mobile/tablet
     useEffect(() => {
@@ -201,8 +202,9 @@ const TarotCardFlip = () => {
     useEffect(() => {
         const generateReading = async () => {
             const allFlipped = cards.every((card) => card.flipped);
-
-            if (allFlipped && !hasGeneratedReading) {
+            
+            // Only generate reading if on desktop or shouldGenerateReading is true
+            if (allFlipped && !hasGeneratedReading && (isDesktop || shouldGenerateReading)) {
                 setIsLoading(true);
                 setError(null);
 
@@ -308,7 +310,7 @@ const TarotCardFlip = () => {
         };
 
         generateReading();
-    }, [cards, hasGeneratedReading]);
+    }, [cards, hasGeneratedReading, isDesktop, shouldGenerateReading]);
 
     const resetCards = useCallback(() => {
         setAiReading('');
@@ -316,6 +318,7 @@ const TarotCardFlip = () => {
         setError(null);
         setIsLoading(false);
         setHasGeneratedReading(false);
+        setShouldGenerateReading(false); // Reset the shouldGenerateReading flag
         setNextCardIndex(0); // Reset the next card index to start with Past
         setCurrentView('Past'); // Reset the view to Past
         setShowNextButton(false); // Hide the next button
@@ -376,7 +379,7 @@ const TarotCardFlip = () => {
                                         onMouseEnter={() => isDesktop && card.flipped && handleMouseEnter(card.imageUrl)}
                                         onMouseLeave={handleMouseLeave}
                                     >
-                                        <div className="card">
+                                        <div className={`card card-${POSITIONS[index].toLowerCase()}`}>
                                             <div className="card-front">
                                                 <img src="/images/back-of-card.png" alt="Card back" />
                                             </div>
@@ -384,7 +387,7 @@ const TarotCardFlip = () => {
                                                 {card.imageUrl && <img src={card.imageUrl} alt={card.name} />}
                                             </div>
                                         </div>
-                                        <span className="card-label">{POSITIONS[index]}</span>
+                                        <span className={`card-label card-label-${POSITIONS[index].toLowerCase()}`}>{POSITIONS[index]}</span>
 
                                         {/* Show Next button on mobile after card is flipped */}
                                         {!isDesktop && card.flipped && showNextButton && (
@@ -417,12 +420,30 @@ const TarotCardFlip = () => {
                                     <p>{error}</p>
                                 </div>
                             )}
+                            {/* Show View Reading button on mobile when all cards are flipped but reading hasn't been generated yet */}
+                            {!isDesktop && 
+                             currentView === 'Reading' && 
+                             cards.every(card => card.flipped) && 
+                             !hasGeneratedReading && 
+                             !isLoading && (
+                                <div className="ai-reading">
+                                    <h3>Your Cards Are Ready</h3>
+                                    <p>Your three cards have been drawn. Click the button below to reveal your mystical reading.</p>
+                                    <div className="button-container">
+                                        <button 
+                                            className="draw-new-cards-btn" 
+                                            onClick={() => setShouldGenerateReading(true)}
+                                        >
+                                            View Reading
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                             {aiReading && !isLoading && (
                                 <div className="ai-reading">
                                     <h3>Your Mystical Reading</h3>
                                     {isLLMGenerated ? (
                                         <div className="combined-reading">
-                                            <h4>AI-Generated Tarot Reading</h4>
                                             <p className="combined-reading-text" dangerouslySetInnerHTML={{ __html: highlightCardNames(aiReading, cards) }}></p>
                                         </div>
                                     ) : (
