@@ -256,42 +256,77 @@
     margin: 0 auto;
     font-family: "Amatic SC", sans-serif;
     font-size: 30px;
-    border: 4px solid transparent;
     outline: none;
     margin-bottom: 20px;
-    background-clip: padding-box;
     color: #f5f5f5;
     line-height: 62px;
-}
-
-.start-reading-btn::before,
-.draw-new-cards-btn::before {
-    content: '';
-    position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    background: linear-gradient(
+    border: 4px solid;
+    border-image: linear-gradient(
         115deg,
         #4fcf70,
         #fad648,
         #a767e5,
         #12bcfe,
         #44ce7b
-    );
-    border-radius: 10px;
-    z-index: -1;
+    ) 1;
+    animation: rainbow-border 4s linear infinite;
 }
 
 .start-reading-btn:hover,
 .draw-new-cards-btn:hover {
-    animation: animate 0.4s linear infinite;
+    animation: rainbow-border 1s linear infinite;
 }
 
-@keyframes animate {
+@keyframes rainbow-border {
+    0% {
+        border-image: linear-gradient(
+            0deg,
+            #4fcf70,
+            #fad648,
+            #a767e5,
+            #12bcfe,
+            #44ce7b
+        ) 1;
+    }
+    25% {
+        border-image: linear-gradient(
+            90deg,
+            #4fcf70,
+            #fad648,
+            #a767e5,
+            #12bcfe,
+            #44ce7b
+        ) 1;
+    }
+    50% {
+        border-image: linear-gradient(
+            180deg,
+            #4fcf70,
+            #fad648,
+            #a767e5,
+            #12bcfe,
+            #44ce7b
+        ) 1;
+    }
+    75% {
+        border-image: linear-gradient(
+            270deg,
+            #4fcf70,
+            #fad648,
+            #a767e5,
+            #12bcfe,
+            #44ce7b
+        ) 1;
+    }
     100% {
-        filter: hue-rotate(-360deg);
+        border-image: linear-gradient(
+            360deg,
+            #4fcf70,
+            #fad648,
+            #a767e5,
+            #12bcfe,
+            #44ce7b
+        ) 1;
     }
 }
 
@@ -625,33 +660,75 @@
     font-weight: bold;
     transition: all 0.3s ease;
     position: relative;
-    border: 4px solid transparent;
-    background-clip: padding-box;
     line-height: 62px;
-}
-
-.purchase-link a::before {
-    content: '';
-    position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
-    background: linear-gradient(
+    border: 4px solid;
+    border-image: linear-gradient(
         135deg,
         #a767e5,
         #12bcfe,
         #4fcf70,
         #fad648,
         #ff7e5f
-    );
-    border-radius: 10px;
-    z-index: -1;
+    ) 1;
+    animation: rainbow-border-purchase 4s linear infinite;
+}
+
+@keyframes rainbow-border-purchase {
+    0% {
+        border-image: linear-gradient(
+            0deg,
+            #a767e5,
+            #12bcfe,
+            #4fcf70,
+            #fad648,
+            #ff7e5f
+        ) 1;
+    }
+    25% {
+        border-image: linear-gradient(
+            90deg,
+            #a767e5,
+            #12bcfe,
+            #4fcf70,
+            #fad648,
+            #ff7e5f
+        ) 1;
+    }
+    50% {
+        border-image: linear-gradient(
+            180deg,
+            #a767e5,
+            #12bcfe,
+            #4fcf70,
+            #fad648,
+            #ff7e5f
+        ) 1;
+    }
+    75% {
+        border-image: linear-gradient(
+            270deg,
+            #a767e5,
+            #12bcfe,
+            #4fcf70,
+            #fad648,
+            #ff7e5f
+        ) 1;
+    }
+    100% {
+        border-image: linear-gradient(
+            360deg,
+            #a767e5,
+            #12bcfe,
+            #4fcf70,
+            #fad648,
+            #ff7e5f
+        ) 1;
+    }
 }
 
 .purchase-link a:hover {
     transform: scale(1.05);
-    animation: animate 0.4s linear infinite;
+    animation: rainbow-border-purchase 1s linear infinite;
 }
 
 .button-wrapper {
@@ -692,19 +769,11 @@
 .next-button {
     display: block;
     padding: 10px 20px;
-    background: linear-gradient(
-        115deg,
-        #4fcf70,
-        #fad648,
-        #a767e5,
-        #12bcfe,
-        #44ce7b
-    );
-    border: none;
+    background: transparent;
     border-radius: 10px;
     color: white;
     font-family: "Amatic SC", sans-serif;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -716,11 +785,21 @@
     transform: translateX(-50%);
     width: 80%;
     max-width: 200px;
+    border: 4px solid;
+    border-image: linear-gradient(
+        115deg,
+        #4fcf70,
+        #fad648,
+        #a767e5,
+        #12bcfe,
+        #44ce7b
+    ) 1;
+    animation: rainbow-border 4s linear infinite;
 }
 
 .next-button:hover {
     transform: translateX(-50%) scale(1.05);
-    animation: animate 0.4s linear infinite;
+    animation: rainbow-border 1s linear infinite;
 }
 
 /* Transition styles */
@@ -739,7 +818,6 @@
 @media (max-width: 600px) {
     .start-reading-btn,
     .draw-new-cards-btn {
-        width: 80%;
         height: 60px;
     }
 
