@@ -61,7 +61,7 @@ const DeckAnimation = ({ onAnimationComplete }) => {
                             onClick={handleStartReading}
                             aria-label="Start Tarot Reading"
                         >
-                            <span>Start Reading</span>
+                            Start Reading
                         </button>
                     </div>
                 )}
