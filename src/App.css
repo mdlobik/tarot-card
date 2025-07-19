@@ -467,6 +467,10 @@ html, body, #root, .App, .tarot-reading-container {
     line-height: 1.5;
 }
 
+.ai-reading.loading {
+    font-family: "Amatic SC", sans-serif;
+}
+
 .ai-reading .card-highlight {
     display: inline-block;
     font-weight: bold;
