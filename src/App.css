@@ -18,6 +18,11 @@ html, body, #root, .App, .tarot-reading-container {
     height: 100%;
 }
 
+.cards-container.show-cards {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .cards {
     display: flex;
     gap: 20px;
