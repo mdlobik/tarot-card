@@ -2,20 +2,27 @@
 html, body, #root, .App, .tarot-reading-container {
     height: 100%;
 }
+
+.tarot-reading-container {
+    position: relative;
+    height: 100vh;
+}
 /* Cards Container */
 .cards-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center; /* Vertical centering */
     gap: 20px;
     opacity: 0;
-    transform: translateY(50px);
-    transition: opacity 0.5s, transform 0.5s;
-    position: relative;
-    z-index: 2;
     padding: 20px;
-    height: fit-content;
+    position: absolute; /* Change from relative to absolute */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center both vertically and horizontally */
+    transition: opacity 0.5s, transform 0.5s;
+    z-index: 2;
+    height: auto; /* Let content define height */
 }
 
 .cards-container.show-cards {
