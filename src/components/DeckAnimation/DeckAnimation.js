@@ -53,16 +53,15 @@ const DeckAnimation = ({ onAnimationComplete }) => {
                             />
                         </div>
                     ))}
+
                     {showButton && imageLoaded && (
-                        <div className="button-wrapper">
-                            <button
-                                className="start-reading-btn"
-                                onClick={handleStartReading}
-                                aria-label="Start Tarot Reading"
-                            >
-                                Start Reading
-                            </button>
-                        </div>
+                        <button
+                            className="start-reading-btn"
+                            onClick={handleStartReading}
+                            aria-label="Start Tarot Reading"
+                        >
+                            Start Reading
+                        </button>
                     )}
                 </div>
             </div>
