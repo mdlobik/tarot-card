@@ -323,7 +323,6 @@ html, body, #root, .App, .tarot-reading-container {
     animation: trippyFadeIn 1.5s ease-in-out forwards;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
     position: relative;
-    overflow: hidden;
 }
 
 /* Mobile-specific centering for reading container */
